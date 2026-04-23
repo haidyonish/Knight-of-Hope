@@ -1,10 +1,17 @@
-﻿public abstract class Upgrade
+﻿using UnityEngine;
+
+public abstract class Upgrade
 {
     public string Name { get; protected set; }
     public string Description { get; protected set; }
 
+    public Sprite CardSprite { get; protected set; }
+
     protected int level = 0;
     protected int maxLevel = 5;
+
+    public int Level => level;
+    public int MaxLevel => maxLevel;
 
     public bool CanUpgrade()
     {

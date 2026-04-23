@@ -1,11 +1,15 @@
-﻿public class SpeedUpgrade : Upgrade
+﻿using UnityEngine;
+
+public class SpeedUpgrade : Upgrade
 {
     private float value = 1f;
 
-    public SpeedUpgrade()
+    public SpeedUpgrade(Sprite cardSprite)
     {
-        Name = "+1 Speed";
-        Description = "Increase move speed";
+        CardSprite = cardSprite;
+
+        Name = "Скорость";
+        Description = "Увеличивает скорость перемещения на 1 единицу";
     }
 
     public override void Apply(PlayerStats stats)

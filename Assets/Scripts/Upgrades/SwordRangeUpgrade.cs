@@ -1,11 +1,15 @@
-﻿public class SwordRangeUpgrade : Upgrade
+﻿using UnityEngine;
+
+public class SwordRangeUpgrade : Upgrade
 {
     private float value = 0.2f;
 
-    public SwordRangeUpgrade()
+    public SwordRangeUpgrade(Sprite cardSprite)
     {
-        Name = "+0.2 Sword range";
-        Description = "Increase sword attack range";
+        CardSprite = cardSprite;
+
+        Name = "Дальность атаки";
+        Description = "Увеличивает дальность атаки меча на 0.2 единицы";
     }
 
     public override void Apply(PlayerStats stats)

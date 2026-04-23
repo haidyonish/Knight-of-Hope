@@ -42,10 +42,12 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float jumpForce = 10f;
     [SerializeField] private int maxHealth = 100;
+    [SerializeField] private int regen = 0;
 
     public float MoveSpeed => moveSpeed;
     public float JumpForce => jumpForce;
     public int MaxHealth => maxHealth;
+    public int Regen => regen;
 
 
     [Header("Global Modifiers")]

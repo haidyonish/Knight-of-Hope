@@ -31,7 +31,7 @@ public abstract class EntityHealth : MonoBehaviour
         originalMaterial = spriteRenderer.material;
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         EndDamageFeedback();
     }

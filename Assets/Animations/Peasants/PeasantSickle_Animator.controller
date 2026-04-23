@@ -31,7 +31,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PeasantKnife_Animator
+  m_Name: PeasantSickle_Animator
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: Attack
@@ -99,7 +99,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 7e7eead708b61d54491beb1edc840309, type: 2}
+  m_Motion: {fileID: 7400000, guid: e429f13702346044b8ee3c992a500d61, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -148,7 +148,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 85e3628c012e2bc4aac18d2ebb5c4773, type: 2}
+  m_Motion: {fileID: 7400000, guid: 5cd13873504a17442ad4b92f3077bce8, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 

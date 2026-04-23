@@ -1,100 +1,96 @@
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class EnemySpawner : MonoBehaviour
 {
-    private List<GameObject> enemyPrefabs;
-    [SerializeField] private GameObject peasantPitchfork;
-    [SerializeField] private GameObject peasantSickle;
-    [SerializeField] private GameObject peasantKnife;
+    [Header("Level Data")]
+    [SerializeField] private LevelSpawnData levelData;
+
+    [Header("Scene References")]
     [SerializeField] private Transform[] spawnPoints;
     [SerializeField] private PlayerXP playerXP;
     [SerializeField] private Transform player;
     [SerializeField] private Transform vip;
 
-    [Header("First Phase")]
-    [SerializeField] private float currentSpawnCooldown = 3f;
-    [SerializeField] private float spawnAcceleration = 0.04f;
-    [SerializeField] private float minSpawnCooldown = 1f;
-    [SerializeField] private int enemiesPerSpawn = 1;
+    private float nextSpawnTime = 0f;
+    private float currentCooldown;
 
-    [Header("Second Phase")]
-    [SerializeField] private float phase2Time = 90f;
-    [SerializeField] private float phase2SpawnCooldown = 10f;
-    [SerializeField] private float phase2SpawnAcceleration = 0.25f;
-    [SerializeField] private float phase2MinSpawnCooldown = 5f;
-    [SerializeField] private int phase2EnemiesPerSpawn = 3;
+    private EnemyWave currentWave;
 
-    [Header("Third Phase")]
-    [SerializeField] private float phase3Time = 180f;
-    [SerializeField] private float phase3SpawnCooldown = 11.5f;
-    [SerializeField] private float phase3SpawnAcceleration = 0.5f;
-    [SerializeField] private float phase3MinSpawnCooldown = 5f;
-    [SerializeField] private int phase3EnemiesPerSpawn = 5;
-
-    private int currentPhase = 1;
-
-    private float nextSpawnTime = 0;
-
-    private void Awake()
+    private void Start()
     {
-        enemyPrefabs = new List<GameObject>();
-        enemyPrefabs.Add(peasantPitchfork);
+        if (levelData.waves.Count > 0)
+        {
+            currentWave = levelData.waves[0];
+            currentCooldown = currentWave.spawnCooldown;
+        }
     }
 
     private void Update()
     {
-        if (currentPhase == 1 && Time.time > phase2Time)
-            StartPhase2();
-        if (currentPhase == 2 && Time.time > phase3Time)
-            StartPhase3();
+        UpdateCurrentWave();
 
+        if (currentWave == null)
+            return;
 
-        if (Time.time > nextSpawnTime)
+        if (Time.time >= nextSpawnTime)
         {
-            SpawnEnemy(enemiesPerSpawn);
-            nextSpawnTime = Time.time + currentSpawnCooldown;
-            currentSpawnCooldown = Mathf.Max(currentSpawnCooldown - spawnAcceleration, minSpawnCooldown);
+            SpawnEnemies(currentWave.enemiesPerSpawn);
+
+            nextSpawnTime = Time.time + currentCooldown;
+
+            currentCooldown =
+                Mathf.Max(
+                    currentCooldown - currentWave.spawnAcceleration,
+                    currentWave.minCooldown
+                );
         }
     }
 
-    private void SpawnEnemy(int count)
+    private void UpdateCurrentWave()
     {
-        int n = spawnPoints.Length;
-        int[] indices = new int[n];
-        for (int i = 0; i < n; i++)
-            indices[i] = i;
-        Shuffle(indices);
+        for (int i = levelData.waves.Count - 1; i >= 0; i--)
+        {
+            if (Time.time >= levelData.waves[i].startTime)
+            {
+                if (currentWave != levelData.waves[i])
+                {
+                    currentWave = levelData.waves[i];
+                    currentCooldown = currentWave.spawnCooldown;
+                }
+
+                return;
+            }
+        }
+    }
+
+    private void SpawnEnemies(int count)
+    {
+        if (currentWave.enemyPrefabs.Count == 0)
+            return;
+
         count = Mathf.Min(count, spawnPoints.Length);
+
+        int[] indices = new int[spawnPoints.Length];
+
+        for (int i = 0; i < indices.Length; i++)
+            indices[i] = i;
+
+        Shuffle(indices);
+
         for (int i = 0; i < count; i++)
         {
-            Transform spawnPoint = spawnPoints[indices[i]];
-            GameObject enemy = Instantiate(enemyPrefabs[Random.Range(0, enemyPrefabs.Count)], spawnPoint.position, Quaternion.identity);
+            Transform point = spawnPoints[indices[i]];
+
+            GameObject prefab =
+                currentWave.enemyPrefabs[
+                    Random.Range(0, currentWave.enemyPrefabs.Count)];
+
+            GameObject enemy =
+                Instantiate(prefab, point.position, Quaternion.identity);
+
             enemy.GetComponent<EnemyHealth>().SetPlayerXP(playerXP);
             enemy.GetComponent<EnemyMovement>().SetTargets(player, vip);
         }
-    }
-
-    private void StartPhase2()
-    {
-        currentPhase = 2;
-        currentSpawnCooldown = phase2SpawnCooldown;
-        spawnAcceleration = phase2SpawnAcceleration;
-        minSpawnCooldown = phase2MinSpawnCooldown;
-        enemiesPerSpawn = phase2EnemiesPerSpawn;
-        enemyPrefabs.Add(peasantSickle);
-    }
-
-    private void StartPhase3()
-    {
-        currentPhase = 3;
-        currentSpawnCooldown = phase3SpawnCooldown;
-        spawnAcceleration = phase3SpawnAcceleration;
-        minSpawnCooldown = phase3MinSpawnCooldown;
-        enemiesPerSpawn = phase3EnemiesPerSpawn;
-        enemyPrefabs.Add(peasantKnife);
     }
 
     private void Shuffle(int[] array)

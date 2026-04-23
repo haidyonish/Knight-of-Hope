@@ -1,11 +1,15 @@
-﻿public class SwordDamageUpgrade : Upgrade
+﻿using UnityEngine;
+
+public class SwordDamageUpgrade : Upgrade
 {
     private float value = 1f;
 
-    public SwordDamageUpgrade()
+    public SwordDamageUpgrade(Sprite cardSprite)
     {
-        Name = "+1 Sword damage";
-        Description = "Increase sword damage";
+        CardSprite = cardSprite;
+
+        Name = "Урон меча";
+        Description = "Увеличивает урон меча на 1 единицу";
     }
 
     public override void Apply(PlayerStats stats)
