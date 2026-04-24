@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class PlayerMovement : EntityMovement
 {
+    [SerializeField] private SoundManager soundManager;
     private PlayerStats playerStats;
 
     private bool isJumpPressed;
@@ -39,6 +40,7 @@ public class PlayerMovement : EntityMovement
 
         if (isJumpPressed && IsGrounded && canJump)
         {
+            soundManager.PlayJump();
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, playerStats.JumpForce);
             isJumpPressed = false;
         }

@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class PlayerXP : MonoBehaviour
 {
+    [SerializeField] private SoundManager soundManager;
     [SerializeField] private UI ui;
     [SerializeField] private UpgradeManager upgradeManager;
 
@@ -20,6 +21,8 @@ public class PlayerXP : MonoBehaviour
 
     private void LevelUp()
     {
+        soundManager.PlayLevelUp();
+        soundManager.PlayCardsReveal();
         currentXP -= XpToNextLevel;
         upgradeManager.ShowUpgrades();
         level += 1;

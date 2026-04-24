@@ -8,6 +8,7 @@ public class EnemySpawner : MonoBehaviour
     [Header("Scene References")]
     [SerializeField] private Transform[] spawnPoints;
     [SerializeField] private PlayerXP playerXP;
+    [SerializeField] private SoundManager soundManager;
     [SerializeField] private Transform player;
     [SerializeField] private Transform vip;
 
@@ -87,8 +88,9 @@ public class EnemySpawner : MonoBehaviour
 
             GameObject enemy =
                 Instantiate(prefab, point.position, Quaternion.identity);
-
             enemy.GetComponent<EnemyHealth>().SetPlayerXP(playerXP);
+            enemy.GetComponent<EnemyHealth>().SetSoundManager(soundManager);
+            enemy.GetComponent<EnemyCombat>().SetSoundManager(soundManager);
             enemy.GetComponent<EnemyMovement>().SetTargets(player, vip);
         }
     }

@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class PlayerHealth : EntityHealth
 {
+    [SerializeField] private SoundManager soundManager;
     [SerializeField] private GameManager gameManager;
     [SerializeField] private float regenTickRate = 1f;
 
@@ -18,6 +19,12 @@ public class PlayerHealth : EntityHealth
             nextRegenTime = Time.time + regenTickRate;
             currentHealth = Mathf.Min(stats.MaxHealth, currentHealth + stats.Regen);
         }
+    }
+
+    public override void TakeDamage(float damage)
+    {
+        base.TakeDamage(damage);
+        soundManager.PlayPlayerHurt();
     }
 
     protected override void Awake()

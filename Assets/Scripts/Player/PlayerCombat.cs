@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class PlayerCombat : EntityCombat
 {
+    [Header("Audio")]
+    [SerializeField] private SoundManager soundManager;
+
     private PlayerStats stats;
 
     protected override void Awake()
@@ -22,19 +25,24 @@ public class PlayerCombat : EntityCombat
     {
         Collider2D[] targets = GetTargets(stats.SwordRange);
 
-        foreach (var t in targets)
+        if (targets.Length != 0)
         {
-            EntityHealth health = t.GetComponent<EntityHealth>();
-
-            if (health != null)
+            soundManager.PlaySwordHitEnemy();
+            foreach (var t in targets)
             {
-                health.TakeDamage(
-                    stats.FinalSwordDamage,
-                    stats.SwordKnockback,
-                    transform.position
-                );
+                EntityHealth health = t.GetComponent<EntityHealth>();
+
+                if (health != null)
+                {
+                    health.TakeDamage(
+                        stats.FinalSwordDamage,
+                        stats.SwordKnockback,
+                        transform.position
+                    );
+                }
             }
-        }
+        } else
+            soundManager.PlaySwordSwing();
     }
 
     protected override float GetAttackRange()

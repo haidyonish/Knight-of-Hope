@@ -2,8 +2,14 @@ using UnityEngine;
 
 public class EnemyCombat : EntityCombat
 {
+    private SoundManager soundManager;
     [SerializeField] float damage = 5;
     [SerializeField] float range = 1f;
+
+    public void SetSoundManager(SoundManager soundManager)
+    {
+        this.soundManager = soundManager;
+    }
 
     private void FixedUpdate()
     {
@@ -13,7 +19,7 @@ public class EnemyCombat : EntityCombat
     public override void DamageTargets()
     {
         Collider2D[] targets = GetTargets(range);
-
+        soundManager.PlayEnemyHit();
         foreach (var t in targets)
         {
             EntityHealth health = t.GetComponent<EntityHealth>();

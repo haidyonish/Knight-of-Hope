@@ -137,6 +137,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   moveSpeed: 1
+  playerPriorityMultiplier: 3
 --- !u!114 &967530749587021448
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -239,7 +240,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 10
+  m_SortingOrder: 1010
   m_MaskInteraction: 0
   m_Sprite: {fileID: -6117913935247783511, guid: 4a995fa77e9befa43af80ef70da0f3b5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
