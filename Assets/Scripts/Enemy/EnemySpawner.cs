@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    [Header("Level Data")]
     [SerializeField] private LevelSpawnData levelData;
+    [SerializeField] private GameManager gameManager;
 
     [Header("Scene References")]
     [SerializeField] private Transform[] spawnPoints;
@@ -23,6 +23,7 @@ public class EnemySpawner : MonoBehaviour
         {
             currentWave = levelData.waves[0];
             currentCooldown = currentWave.spawnCooldown;
+            nextSpawnTime = 0f;
         }
     }
 
@@ -33,11 +34,11 @@ public class EnemySpawner : MonoBehaviour
         if (currentWave == null)
             return;
 
-        if (Time.time >= nextSpawnTime)
+        if (gameManager.CurrentTime >= nextSpawnTime)
         {
             SpawnEnemies(currentWave.enemiesPerSpawn);
 
-            nextSpawnTime = Time.time + currentCooldown;
+            nextSpawnTime = gameManager.CurrentTime + currentCooldown;
 
             currentCooldown =
                 Mathf.Max(
@@ -51,7 +52,7 @@ public class EnemySpawner : MonoBehaviour
     {
         for (int i = levelData.waves.Count - 1; i >= 0; i--)
         {
-            if (Time.time >= levelData.waves[i].startTime)
+            if (gameManager.CurrentTime >= levelData.waves[i].startTime)
             {
                 if (currentWave != levelData.waves[i])
                 {
