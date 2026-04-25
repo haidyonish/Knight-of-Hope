@@ -5,10 +5,16 @@ public class PlayerHealth : EntityHealth
     [SerializeField] private SoundManager soundManager;
     [SerializeField] private GameManager gameManager;
     [SerializeField] private float regenTickRate = 1f;
+    [SerializeField] private StatBars statBars;
 
     private PlayerStats stats;
 
     private float nextRegenTime = 0;
+
+    private void Start()
+    {
+        statBars.SetHPInstant(1f);
+    }
 
     protected override void Update()
     {
@@ -24,6 +30,7 @@ public class PlayerHealth : EntityHealth
     public override void TakeDamage(float damage)
     {
         base.TakeDamage(damage);
+        statBars.SetHP(currentHealth / stats.MaxHealth);
         soundManager.PlayPlayerHurt();
     }
 

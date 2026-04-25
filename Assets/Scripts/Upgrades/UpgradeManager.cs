@@ -7,6 +7,7 @@ public class UpgradeManager : MonoBehaviour
     [SerializeField] private PlayerStats playerStats;
     [SerializeField] private CardUI[] cards;
     [SerializeField] private GameObject upgradePanel;
+    [SerializeField] private PlayerXP playerXP;
 
     [Header("Card Sprites")]
     [SerializeField] private Sprite damageMultiplierCard;
@@ -40,8 +41,10 @@ public class UpgradeManager : MonoBehaviour
     {
         upgrade.Apply(playerStats);
 
-        Time.timeScale = 1f;
         upgradePanel.SetActive(false);
+        Time.timeScale = 1f;
+
+        playerXP.FinishUpgradeSelection();
     }
 
     private List<Upgrade> GetRandomUpgrades(int count)

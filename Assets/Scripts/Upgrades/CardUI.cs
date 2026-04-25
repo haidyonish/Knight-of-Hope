@@ -21,7 +21,7 @@ public class CardUI : MonoBehaviour
 
         titleText.text = upgrade.Name;
         descriptionText.text = upgrade.Description;
-        levelText.text = $"{upgrade.Level}/{upgrade.MaxLevel}";
+        levelText.text = $"{upgrade.Level} из {upgrade.MaxLevel}";
     }
 
     public void OnClick()

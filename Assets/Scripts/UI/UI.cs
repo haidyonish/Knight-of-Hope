@@ -5,11 +5,10 @@ public class UI : MonoBehaviour
 {
     [SerializeField] private GameManager gameManager;
     [SerializeField] private TMP_Text timerText;
+    [SerializeField] private TMP_Text levelText;
 
     [SerializeField] private GameObject gameOverPanel;
     [SerializeField] private GameObject victoryPanel;
-
-    [SerializeField] private XPBar xpBar;
 
     private void Update()
     {
@@ -20,9 +19,9 @@ public class UI : MonoBehaviour
 
     public void ShowVictoryPanel() => victoryPanel.SetActive(true);
 
-    public void UpdateXPBar(float currentXP, float maxXP)
+    public void UpdateLevelText(int level)
     {
-        xpBar.SetProgress(currentXP / maxXP);
+        levelText.text = $"Уровень {level}";
     }
 
     private void UpdateTimer()

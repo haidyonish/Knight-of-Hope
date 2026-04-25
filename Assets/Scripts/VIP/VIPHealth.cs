@@ -13,13 +13,15 @@ public class VIPHealth : EntityHealth
 {
     [SerializeField] private SoundManager soundManager;
     [SerializeField] private GameManager gameManager;
+    [SerializeField] private HeartsUI heartsUI;
+
 
     [SerializeField] private VIPType vipType;
 
     public override void TakeDamage(float damage)
     {
         currentHealth -= 1;
-
+        heartsUI.RefreshHearts();
         PlayHitSound();
         PlayDamageFeedback();
 
