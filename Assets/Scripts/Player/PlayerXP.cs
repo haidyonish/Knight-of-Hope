@@ -6,6 +6,7 @@ public class PlayerXP : MonoBehaviour
     [SerializeField] private StatBars statBars;
     [SerializeField] private UI ui;
     [SerializeField] private UpgradeManager upgradeManager;
+    [SerializeField] private PlayerStats stats;
 
     private float currentXP = 0f;
     private int level = 1;
@@ -25,7 +26,7 @@ public class PlayerXP : MonoBehaviour
 
     public void AddXP(float amount)
     {
-        currentXP += amount;
+        currentXP += amount * (1f + stats.ExperienceMultiplier);
 
         if (isChoosingUpgrade)
             return;

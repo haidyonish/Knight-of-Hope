@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class PlayerStats : MonoBehaviour
 {
+    [SerializeField] private PlayerHealth playerHealth;
+
+
     [Header("Sword")]
     [SerializeField] private float swordDamage = 5f;
     [SerializeField] private float swordRange = 1f;
@@ -41,13 +44,13 @@ public class PlayerStats : MonoBehaviour
     [Header("Player")]
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float jumpForce = 10f;
-    [SerializeField] private int maxHealth = 100;
-    [SerializeField] private int regen = 0;
+    [SerializeField] private float maxHealth = 100f;
+    [SerializeField] private float regen = 0;
 
     public float MoveSpeed => moveSpeed;
     public float JumpForce => jumpForce;
-    public int MaxHealth => maxHealth;
-    public int Regen => regen;
+    public float MaxHealth => maxHealth;
+    public float Regen => regen;
 
 
     [Header("Global Modifiers")]
@@ -79,5 +82,11 @@ public class PlayerStats : MonoBehaviour
 
     public void AddMoveSpeed(float value) => moveSpeed += value;
 
-    public void AddMaxHealth(int value) => maxHealth += value;
+    public void AddMaxHealth(float amount)
+    {
+        maxHealth += amount;
+        playerHealth.IncreaseMaxHealth(amount);
+    }
+    public void AddHealthRegen(float value) => regen += value;
+    public void AddExperienceMultiplier(float value) => experienceMultiplier += value;
 }

@@ -4,26 +4,38 @@ public class PlayerHealth : EntityHealth
 {
     [SerializeField] private SoundManager soundManager;
     [SerializeField] private GameManager gameManager;
-    [SerializeField] private float regenTickRate = 1f;
+    [SerializeField] private float regenEfficiency = 0.5f;
     [SerializeField] private StatBars statBars;
 
     private PlayerStats stats;
 
-    private float nextRegenTime = 0;
+    protected override void Awake()
+    {
+        stats = GetComponent<PlayerStats>();
+
+        maxHealth = stats.MaxHealth;
+        base.Awake();
+    }
 
     private void Start()
     {
-        statBars.SetHPInstant(1f);
+        statBars.SetHPInstant(currentHealth / stats.MaxHealth);
     }
 
     protected override void Update()
     {
         base.Update();
 
-        if (Time.time > nextRegenTime)
+        if (stats.Regen > 0f && currentHealth < stats.MaxHealth)
         {
-            nextRegenTime = Time.time + regenTickRate;
-            currentHealth = Mathf.Min(stats.MaxHealth, currentHealth + stats.Regen);
+            currentHealth +=
+                stats.Regen *
+                Time.deltaTime *
+                regenEfficiency;
+
+            currentHealth =
+                Mathf.Min(currentHealth, stats.MaxHealth);
+
             statBars.SetHP(currentHealth / stats.MaxHealth);
         }
     }
@@ -31,15 +43,19 @@ public class PlayerHealth : EntityHealth
     public override void TakeDamage(float damage)
     {
         base.TakeDamage(damage);
+
         statBars.SetHP(currentHealth / stats.MaxHealth);
         soundManager.PlayPlayerHurt();
     }
 
-    protected override void Awake()
+    public void IncreaseMaxHealth(float amount)
     {
-        stats = GetComponent<PlayerStats>();
-        maxHealth = stats.MaxHealth;
-        base.Awake();
+        currentHealth += amount;
+
+        currentHealth =
+            Mathf.Min(currentHealth, stats.MaxHealth);
+
+        statBars.SetHP(currentHealth / stats.MaxHealth);
     }
 
     protected override void Die()

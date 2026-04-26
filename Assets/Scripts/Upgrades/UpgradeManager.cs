@@ -1,4 +1,3 @@
-// UpgradeManager.cs
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,6 +13,9 @@ public class UpgradeManager : MonoBehaviour
     [SerializeField] private Sprite swordDamageCard;
     [SerializeField] private Sprite speedCard;
     [SerializeField] private Sprite swordRangeCard;
+    [SerializeField] private Sprite maxHealthCard;
+    [SerializeField] private Sprite regenCard;
+    [SerializeField] private Sprite experienceCard;
 
     private List<Upgrade> upgrades = new List<Upgrade>();
 
@@ -25,6 +27,9 @@ public class UpgradeManager : MonoBehaviour
         upgrades.Add(new SwordDamageUpgrade(swordDamageCard));
         upgrades.Add(new SpeedUpgrade(speedCard));
         upgrades.Add(new SwordRangeUpgrade(swordRangeCard));
+        upgrades.Add(new MaxHealthUpgrade(maxHealthCard));
+        upgrades.Add(new HealthRegenUpgrade(regenCard));
+        upgrades.Add(new ExperienceUpgrade(experienceCard));
 
         LoadUpgradeLevels();
         ApplyLoadedUpgrades();

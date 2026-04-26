@@ -8,7 +8,7 @@ public class SpeedUpgrade : Upgrade
     {
         CardSprite = cardSprite;
         Id = "speed";
-        Name = "Скорость";
+        Name = "Проворство";
         Description = "Увеличивает скорость перемещения на 1 единицу";
     }
 
