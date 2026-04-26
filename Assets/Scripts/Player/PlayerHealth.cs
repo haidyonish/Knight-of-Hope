@@ -24,6 +24,7 @@ public class PlayerHealth : EntityHealth
         {
             nextRegenTime = Time.time + regenTickRate;
             currentHealth = Mathf.Min(stats.MaxHealth, currentHealth + stats.Regen);
+            statBars.SetHP(currentHealth / stats.MaxHealth);
         }
     }
 

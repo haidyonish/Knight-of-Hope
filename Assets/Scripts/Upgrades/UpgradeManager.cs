@@ -17,6 +17,8 @@ public class UpgradeManager : MonoBehaviour
 
     private List<Upgrade> upgrades = new List<Upgrade>();
 
+    public bool IsChoosingUpgrade => upgradePanel.activeSelf;
+
     private void Awake()
     {
         upgrades.Add(new DamageMultiplierUpgrade(damageMultiplierCard));

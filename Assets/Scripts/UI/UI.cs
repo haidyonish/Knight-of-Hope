@@ -10,10 +10,21 @@ public class UI : MonoBehaviour
 
     [SerializeField] private GameObject gameOverPanel;
     [SerializeField] private GameObject victoryPanel;
+    [SerializeField] private GameObject pausePanel;
 
     private void Update()
     {
         UpdateTimer();
+    }
+
+    public void ShowPausePanel()
+    {
+        pausePanel.SetActive(true);
+    }
+
+    public void HidePausePanel()
+    {
+        pausePanel.SetActive(false);
     }
 
     public void ShowGameOverPanel() => gameOverPanel.SetActive(true);

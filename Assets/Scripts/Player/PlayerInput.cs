@@ -9,7 +9,9 @@ public class PlayerInput : MonoBehaviour
 {
     private PlayerInputActions input;
     private PlayerMovement movement;
+    [SerializeField] private GameManager gameManager;
     PlayerCombat combat;
+
 
     private void Awake()
     {
@@ -27,6 +29,12 @@ public class PlayerInput : MonoBehaviour
 
         input.Player.Jump.started += OnJump;
         input.Player.Attack.started += OnAttack;
+    }
+
+    private void Update()
+    {
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+            gameManager.TogglePause();
     }
 
     private void OnDisable()

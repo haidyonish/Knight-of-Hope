@@ -2,8 +2,6 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
-    [SerializeField] private AudioSource audioSource;
-
     [System.Serializable]
     private class SoundData
     {
@@ -36,6 +34,62 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private SoundData cardSelected;
     [SerializeField] private SoundData pauseMenuClose;
     [SerializeField] private SoundData pauseMenuOpen;
+
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioSource musicSource;
+    [SerializeField] private float fadeSpeed = 2f;
+    private bool musicPaused = false;
+    private float targetVolume;
+    private float savedVolume;
+
+    private void Awake()
+    {
+        targetVolume = musicSource.volume;
+    }
+
+    private void Update()
+    {
+        musicSource.volume = Mathf.MoveTowards(
+            musicSource.volume,
+            targetVolume,
+            fadeSpeed * Time.unscaledDeltaTime
+        );
+    }
+
+    public void PauseMusic()
+    {
+        if (musicPaused)
+            return;
+
+        musicPaused = true;
+
+        savedVolume = targetVolume;
+        targetVolume = savedVolume * 0.2f;
+    }
+
+    public void ResumeMusic()
+    {
+        if (!musicPaused)
+            return;
+
+        musicPaused = false;
+
+        targetVolume = savedVolume;
+    }
+
+    public void StopMusicSmooth()
+    {
+        targetVolume = 0f;
+        musicPaused = false;
+    }
+
+    public void SetMusicVolume(float volume)
+    {
+        targetVolume = volume;
+
+        if (!musicPaused)
+            musicSource.volume = volume;
+    }
 
     private void Play(SoundData sound)
     {

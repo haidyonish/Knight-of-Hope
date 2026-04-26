@@ -1266,7 +1266,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80f1290333337924ab703a5ec528dc35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SoundManager
-  audioSource: {fileID: 944381879}
   enemyDeath:
     clip: {fileID: 8300000, guid: 56a0f8f349310e948b4e573bf773ccd5, type: 3}
     volume: 0.8
@@ -1327,6 +1326,9 @@ MonoBehaviour:
   pauseMenuOpen:
     clip: {fileID: 8300000, guid: fbce8ae7a18cfd54eb49be47c16c1e9d, type: 3}
     volume: 1
+  audioSource: {fileID: 944381879}
+  musicSource: {fileID: 1378343315}
+  fadeSpeed: 2
 --- !u!82 &944381879
 AudioSource:
   m_ObjectHideFlags: 0
