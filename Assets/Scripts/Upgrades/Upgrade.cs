@@ -2,6 +2,7 @@
 
 public abstract class Upgrade
 {
+    public string Id { get; protected set; }
     public string Name { get; protected set; }
     public string Description { get; protected set; }
 
@@ -19,4 +20,9 @@ public abstract class Upgrade
     }
 
     public abstract void Apply(PlayerStats stats);
+
+    public void SetLevel(int value)
+    {
+        level = value;
+    }
 }

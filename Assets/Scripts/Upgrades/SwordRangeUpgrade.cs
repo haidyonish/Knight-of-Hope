@@ -7,7 +7,7 @@ public class SwordRangeUpgrade : Upgrade
     public SwordRangeUpgrade(Sprite cardSprite)
     {
         CardSprite = cardSprite;
-
+        Id = "sword_range";
         Name = "Дальность атаки";
         Description = "Увеличивает дальность атаки меча на 0.2 единицы";
     }

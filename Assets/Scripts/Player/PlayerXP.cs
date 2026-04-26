@@ -16,6 +16,9 @@ public class PlayerXP : MonoBehaviour
 
     private void Start()
     {
+        level = RunData.Instance.playerLevel;
+        currentXP = RunData.Instance.currentXP;
+
         ui.UpdateLevelText(level);
         statBars.SetXPInstant(currentXP / XpToNextLevel);
     }
@@ -35,6 +38,7 @@ public class PlayerXP : MonoBehaviour
         }
 
         statBars.SetXP(currentXP / XpToNextLevel);
+        SaveProgress();
     }
 
     private void LevelUp()
@@ -67,5 +71,11 @@ public class PlayerXP : MonoBehaviour
     public void RefreshXPBar()
     {
         statBars.SetXP(currentXP / XpToNextLevel);
+    }
+
+    private void SaveProgress()
+    {
+        RunData.Instance.playerLevel = level;
+        RunData.Instance.currentXP = currentXP;
     }
 }

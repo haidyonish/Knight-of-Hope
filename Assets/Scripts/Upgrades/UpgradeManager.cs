@@ -23,6 +23,9 @@ public class UpgradeManager : MonoBehaviour
         upgrades.Add(new SwordDamageUpgrade(swordDamageCard));
         upgrades.Add(new SpeedUpgrade(speedCard));
         upgrades.Add(new SwordRangeUpgrade(swordRangeCard));
+
+        LoadUpgradeLevels();
+        ApplyLoadedUpgrades();
     }
 
     public void ShowUpgrades()
@@ -40,6 +43,8 @@ public class UpgradeManager : MonoBehaviour
     public void UpgradeSelected(Upgrade upgrade)
     {
         upgrade.Apply(playerStats);
+
+        SaveUpgradeLevels();
 
         upgradePanel.SetActive(false);
         Time.timeScale = 1f;
@@ -70,5 +75,50 @@ public class UpgradeManager : MonoBehaviour
         }
 
         return result;
+    }
+
+    private void LoadUpgradeLevels()
+    {
+        foreach (var save in RunData.Instance.upgrades)
+        {
+            foreach (var upgrade in upgrades)
+            {
+                if (upgrade.Id == save.id)
+                {
+                    upgrade.SetLevel(save.level);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void ApplyLoadedUpgrades()
+    {
+        foreach (var upgrade in upgrades)
+        {
+            int savedLevel = upgrade.Level;
+
+            upgrade.SetLevel(0);
+
+            for (int i = 0; i < savedLevel; i++)
+                upgrade.Apply(playerStats);
+
+            upgrade.SetLevel(savedLevel);
+        }
+    }
+
+    private void SaveUpgradeLevels()
+    {
+        RunData.Instance.upgrades.Clear();
+
+        foreach (var upgrade in upgrades)
+        {
+            RunData.Instance.upgrades.Add(
+                new UpgradeSaveData(
+                    upgrade.Id,
+                    upgrade.Level
+                )
+            );
+        }
     }
 }

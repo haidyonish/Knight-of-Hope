@@ -7,7 +7,7 @@ public class SwordDamageUpgrade : Upgrade
     public SwordDamageUpgrade(Sprite cardSprite)
     {
         CardSprite = cardSprite;
-
+        Id = "sword_damage";
         Name = "Урон меча";
         Description = "Увеличивает урон меча на 1 единицу";
     }

@@ -5,6 +5,7 @@ public class MainMenu : MonoBehaviour
 {
     public void StartGame()
     {
+        RunData.Instance.ResetRun();
         SceneManager.LoadScene("Level1");
     }
 

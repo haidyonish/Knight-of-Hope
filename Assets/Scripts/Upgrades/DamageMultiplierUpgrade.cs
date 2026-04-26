@@ -7,7 +7,7 @@ public class DamageMultiplierUpgrade : Upgrade
     public DamageMultiplierUpgrade(Sprite cardSprite)
     {
         CardSprite = cardSprite;
-
+        Id = "damage_multiplier";
         Name = "Общий урон";
         Description = "Увеличивает общий урон на 10%";
     }

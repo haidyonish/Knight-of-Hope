@@ -6,7 +6,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private UI ui;
 
     [SerializeField] private float levelDuration = 30.0f;
+
     public float CurrentTime { get; private set; }
+
     private bool gameOver = false;
 
     public float LevelDuration => levelDuration;
@@ -27,15 +29,35 @@ public class GameManager : MonoBehaviour
     public void RestartLevel()
     {
         Time.timeScale = 1f;
+
         Scene currentScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(currentScene.buildIndex);
     }
 
+    public void LoadNextLevel()
+    {
+        Time.timeScale = 1f;
+
+        int nextSceneIndex =
+            SceneManager.GetActiveScene().buildIndex + 1;
+
+        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
+        {
+            SceneManager.LoadScene(nextSceneIndex);
+        }
+        else
+        {
+            SceneManager.LoadScene("MainMenu");
+        }
+    }
+
     public void GameOver()
     {
-        if (gameOver) return;
+        if (gameOver)
+            return;
 
         ui.ShowGameOverPanel();
+
         gameOver = true;
         Time.timeScale = 0.3f;
     }
@@ -43,6 +65,7 @@ public class GameManager : MonoBehaviour
     private void Victory()
     {
         ui.ShowVictoryPanel();
+
         Time.timeScale = 0.3f;
     }
 }
