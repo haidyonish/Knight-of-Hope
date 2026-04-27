@@ -4568,7 +4568,7 @@ MonoBehaviour:
   ui: {fileID: 1989279873}
   soundManager: {fileID: 1842754686}
   upgradeManager: {fileID: 1688587424}
-  levelDuration: 1
+  levelDuration: 60
 --- !u!4 &1051953531
 Transform:
   m_ObjectHideFlags: 0
