@@ -7,6 +7,11 @@ public class UpgradeManager : MonoBehaviour
     [SerializeField] private CardUI[] cards;
     [SerializeField] private GameObject upgradePanel;
     [SerializeField] private PlayerXP playerXP;
+    [SerializeField] private GameObject inputBlocker;
+    [SerializeField] private float inputBlockTime = 0.6f;
+
+    private float inputBlockTimer = 0f;
+    private bool isBlockingInput = false;
 
     [Header("Card Sprites")]
     [SerializeField] private Sprite damageMultiplierCard;
@@ -35,6 +40,20 @@ public class UpgradeManager : MonoBehaviour
         ApplyLoadedUpgrades();
     }
 
+    private void Update()
+    {
+        if (!isBlockingInput)
+            return;
+
+        inputBlockTimer -= Time.unscaledDeltaTime;
+
+        if (inputBlockTimer <= 0f)
+        {
+            isBlockingInput = false;
+            inputBlocker.SetActive(false);
+        }
+    }
+
     public void ShowUpgrades()
     {
         Time.timeScale = 0f;
@@ -45,10 +64,16 @@ public class UpgradeManager : MonoBehaviour
             cards[i].SetUpgrade(selectedUpgrades[i]);
 
         upgradePanel.SetActive(true);
+
+        inputBlocker.SetActive(true);
+        inputBlockTimer = inputBlockTime;
+        isBlockingInput = true;
     }
 
     public void UpgradeSelected(Upgrade upgrade)
     {
+        if (isBlockingInput)
+            return;
         upgrade.Apply(playerStats);
 
         SaveUpgradeLevels();

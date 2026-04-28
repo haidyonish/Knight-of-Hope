@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private UI ui;
     [SerializeField] private SoundManager soundManager;
     [SerializeField] private UpgradeManager upgradeManager;
+    [SerializeField] private PauseMenu pauseMenu;
+    [SerializeField] private RunStatsManager runStatsManager;
 
     [SerializeField] private float levelDuration = 30f;
 
@@ -71,10 +73,12 @@ public class GameManager : MonoBehaviour
         isPaused = false;
         Time.timeScale = 1f;
         ui.HidePausePanel();
+        pauseMenu.ResetToPause();
     }
 
     public void LoadStatistics()
     {
+        runStatsManager.OnDefeatLevelCompleted();
         Time.timeScale = 1f;
         SceneManager.LoadScene("Statistics");
     }
@@ -99,6 +103,7 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         RunData.Instance.ResetRun();
+        RunStats.Instance.ResetStats();
         SceneManager.LoadScene("Level1");
     }
 
@@ -108,6 +113,8 @@ public class GameManager : MonoBehaviour
             return;
 
         gameOver = true;
+
+        runStatsManager.OnDefeatLevelCompleted();
 
         soundManager.StopMusicSmooth();
         soundManager.PlayGameOver();
@@ -123,6 +130,8 @@ public class GameManager : MonoBehaviour
             return;
 
         victory = true;
+
+        runStatsManager.OnVictoryLevelCompleted();
 
         soundManager.StopMusicSmooth();
         soundManager.PlayGameWin();

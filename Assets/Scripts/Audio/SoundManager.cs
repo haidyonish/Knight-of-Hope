@@ -35,68 +35,84 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private SoundData pauseMenuClose;
     [SerializeField] private SoundData pauseMenuOpen;
 
+    [Header("Sources")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioSource musicSource;
+
+    [Header("Global Volume")]
+    [SerializeField] private float masterVolumeMultiplier = 0.1f;
+    [SerializeField] private float sfxMultiplier = 1f;
+
+    [Header("Music")]
+    [SerializeField] private float baseMusicVolume = 0.5f;
     [SerializeField] private float fadeSpeed = 2f;
+
     private bool musicPaused = false;
-    private float targetVolume;
-    private float savedVolume;
+    private bool musicStopped = false;
+
+    private float currentVolume;
 
     private void Awake()
     {
-        targetVolume = musicSource.volume;
+        SettingsData.Load();
+        currentVolume = musicSource.volume;
     }
 
     private void Update()
     {
-        musicSource.volume = Mathf.MoveTowards(
-            musicSource.volume,
-            targetVolume,
+        float target =
+            baseMusicVolume *
+            masterVolumeMultiplier *
+            SettingsData.ToVolume(SettingsData.Master) *
+            SettingsData.ToVolume(SettingsData.Music);
+
+        if (musicPaused)
+            target *= 0.2f;
+
+        if (musicStopped)
+            target = 0f;
+
+        currentVolume = Mathf.MoveTowards(
+            currentVolume,
+            target,
             fadeSpeed * Time.unscaledDeltaTime
         );
+
+        musicSource.volume = currentVolume;
     }
 
     public void PauseMusic()
     {
-        if (musicPaused)
-            return;
-
         musicPaused = true;
-
-        savedVolume = targetVolume;
-        targetVolume = savedVolume * 0.2f;
     }
 
     public void ResumeMusic()
     {
-        if (!musicPaused)
-            return;
-
         musicPaused = false;
-
-        targetVolume = savedVolume;
     }
 
     public void StopMusicSmooth()
     {
-        targetVolume = 0f;
-        musicPaused = false;
+        musicStopped = true;
     }
 
-    public void SetMusicVolume(float volume)
-    {
-        targetVolume = volume;
-
-        if (!musicPaused)
-            musicSource.volume = volume;
-    }
-
-    private void Play(SoundData sound)
+    private void Play(SoundData sound, bool isUI = false)
     {
         if (sound.clip == null)
             return;
 
-        audioSource.PlayOneShot(sound.clip, sound.volume);
+        float category = isUI
+            ? SettingsData.UI
+            : SettingsData.SFX;
+
+        float volume =
+            sound.volume *
+            sfxMultiplier *
+            masterVolumeMultiplier *
+            SettingsData.ToVolume(SettingsData.Master) *
+            SettingsData.ToVolume(category);
+
+        audioSource.PlayOneShot(sound.clip, volume);
     }
 
     // SFX
@@ -116,10 +132,10 @@ public class SoundManager : MonoBehaviour
     public void PlayCardsReveal() => Play(cardsReveal);
 
     // UI
-    public void PlayButtonClick() => Play(buttonClick);
-    public void PlayButtonHover() => Play(buttonHover);
-    public void PlayCardHover() => Play(cardHover);
-    public void PlayCardSelected() => Play(cardSelected);
-    public void PlayPauseMenuClose() => Play(pauseMenuClose);
-    public void PlayPauseMenuOpen() => Play(pauseMenuOpen);
+    public void PlayButtonClick() => Play(buttonClick, true);
+    public void PlayButtonHover() => Play(buttonHover, true);
+    public void PlayCardHover() => Play(cardHover, true);
+    public void PlayCardSelected() => Play(cardSelected, true);
+    public void PlayPauseMenuClose() => Play(pauseMenuClose, true);
+    public void PlayPauseMenuOpen() => Play(pauseMenuOpen, true);
 }

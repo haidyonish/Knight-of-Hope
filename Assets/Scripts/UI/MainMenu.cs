@@ -11,7 +11,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private float animationSpeed = 8f;
 
     private readonly Vector2 hiddenPos = new Vector2(350f, -1000f);
-    private readonly Vector2 shownPos = new Vector2(350f, 20f);
+    private readonly Vector2 shownPos = new Vector2(350f, 0f);
 
     private Vector2 creditsTarget;
     private Vector2 settingsTarget;
@@ -34,6 +34,7 @@ public class MainMenu : MonoBehaviour
     public void StartGame()
     {
         RunData.Instance.ResetRun();
+        RunStats.Instance.ResetStats();
         SceneManager.LoadScene("Level1");
     }
 

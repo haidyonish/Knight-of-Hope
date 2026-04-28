@@ -9,18 +9,18 @@ public class PlayerXP : MonoBehaviour
     [SerializeField] private PlayerStats stats;
 
     private float currentXP = 0f;
-    private int level = 1;
+    public int Level { get; private set; }
 
     private bool isChoosingUpgrade = false;
 
-    private float XpToNextLevel => 10 + (level - 1) * 5;
+    private float XpToNextLevel => 10 + (Level - 1) * 5;
 
     private void Start()
     {
-        level = RunData.Instance.playerLevel;
+        Level = RunData.Instance.playerLevel;
         currentXP = RunData.Instance.currentXP;
 
-        ui.UpdateLevelText(level);
+        ui.UpdateLevelText(Level);
         statBars.SetXPInstant(currentXP / XpToNextLevel);
     }
 
@@ -48,8 +48,8 @@ public class PlayerXP : MonoBehaviour
         soundManager.PlayCardsReveal();
 
         currentXP -= XpToNextLevel;
-        level++;
-        ui.UpdateLevelText(level);
+        Level++;
+        ui.UpdateLevelText(Level);
 
         isChoosingUpgrade = true;
         upgradeManager.ShowUpgrades();
@@ -76,7 +76,7 @@ public class PlayerXP : MonoBehaviour
 
     private void SaveProgress()
     {
-        RunData.Instance.playerLevel = level;
+        RunData.Instance.playerLevel = Level;
         RunData.Instance.currentXP = currentXP;
     }
 }
