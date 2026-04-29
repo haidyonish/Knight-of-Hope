@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.leadr.sdk": "https://github.com/LEADR-Official/leadr-sdk-unity.git?path=Packages/com.leadr.sdk",
     "com.unity.2d.animation": "13.0.4",
     "com.unity.2d.aseprite": "3.0.1",
     "com.unity.2d.psdimporter": "12.0.1",

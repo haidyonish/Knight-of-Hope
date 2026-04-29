@@ -16,6 +16,17 @@ public class SettingsMenu : MonoBehaviour
     [SerializeField] private TMP_Text sfxText;
     [SerializeField] private TMP_Text uiText;
 
+    [Header("Nickname")]
+    [SerializeField] private TMP_InputField nameInput;
+    [SerializeField] private TMP_Text currentNameText;
+    [SerializeField] private TMP_Text nameMessage;
+    [SerializeField] private Button applyButton;
+    [SerializeField] private LeaderboardService leaderboardService;
+
+    [SerializeField]
+    private string defaultNameMessage =
+        "Вы можете сменить имя. Оно обновится в таблице лидеров";
+
     private bool isUpdating = false;
 
     private void Start()
@@ -32,34 +43,79 @@ public class SettingsMenu : MonoBehaviour
         isUpdating = false;
 
         UpdateTexts();
+
+        PlayerProfile.Load();
+
+        currentNameText.text = $"Текущее имя: {PlayerProfile.PlayerName}";
+
+        nameMessage.text = defaultNameMessage;
+        nameInput.characterLimit = 16;
     }
 
     public void SetMaster(float value)
     {
         if (isUpdating) return;
-
         Apply(ref SettingsData.Master, masterSlider, value);
     }
 
     public void SetMusic(float value)
     {
         if (isUpdating) return;
-
         Apply(ref SettingsData.Music, musicSlider, value);
     }
 
     public void SetSFX(float value)
     {
         if (isUpdating) return;
-
         Apply(ref SettingsData.SFX, sfxSlider, value);
     }
 
     public void SetUI(float value)
     {
         if (isUpdating) return;
-
         Apply(ref SettingsData.UI, uiSlider, value);
+    }
+
+    public async void ApplyName()
+    {
+        string input = nameInput.text;
+
+        if (!NicknameValidator.TryValidate(input, out string error, out string clean))
+        {
+            nameMessage.text = error;
+            return;
+        }
+
+        if (clean == PlayerProfile.PlayerName)
+        {
+            nameMessage.text = "Это уже текущее имя";
+            return;
+        }
+
+        PlayerProfile.SetName(clean);
+
+        currentNameText.text = $"Текущее имя: {clean}";
+        nameMessage.text = "Имя сохранено";
+
+        int bestScore = PlayerProfile.BestScore;
+
+        if (bestScore <= 0 || leaderboardService == null)
+            return;
+
+        applyButton.interactable = false;
+
+        try
+        {
+            await leaderboardService.SubmitScoreAsync(bestScore);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"[SettingsMenu] Failed to submit score: {e}");
+        }
+        finally
+        {
+            applyButton.interactable = true;
+        }
     }
 
     private void Apply(ref float target, Slider slider, float value)

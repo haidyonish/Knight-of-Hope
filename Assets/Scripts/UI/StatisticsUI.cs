@@ -17,10 +17,21 @@ public class StatisticsUI : MonoBehaviour
     [Header("Total")]
     [SerializeField] private TMP_Text totalScoreText;
 
+    [Header("Refs")]
+    [SerializeField] private RunStatsManager runStatsManager;
+
     [Header("Timing")]
     [SerializeField] private float startDelay = 0.5f;
     [SerializeField] private float showDelay = 0.25f;
-    [SerializeField] private float countDuration = 0.6f; // ВСЕГДА одинаковая длительность
+    [SerializeField] private float countDuration = 0.6f;
+
+    [Header("Total Animation")]
+    [SerializeField] private float pulseSpeed = 2f;
+    [SerializeField] private float pulseAmplitude = 0.1f;
+
+    private bool pulseActive = false;
+    private float pulseTimer = 0f;
+    private Vector3 baseScale;
 
     private int stepIndex = 0;
     private float timer = 0f;
@@ -29,6 +40,7 @@ public class StatisticsUI : MonoBehaviour
 
     private bool showing = false;
     private bool counting = false;
+    private bool submitted = false;
 
     private float countTimer = 0f;
     private int startValue = 0;
@@ -36,6 +48,13 @@ public class StatisticsUI : MonoBehaviour
 
     private void Start()
     {
+        int score = RunStats.Instance.CalculateTotalScore();
+        baseScale = totalScoreText.transform.localScale;
+
+        PlayerProfile.TrySetBestScore(score);
+
+        SubmitScoreSafe();
+
         SetupTexts();
         HideAll();
         totalScoreText.text = "0";
@@ -45,8 +64,14 @@ public class StatisticsUI : MonoBehaviour
 
     private void Update()
     {
+        // 🔥 ВСЕГДА обновляем анимацию
+        UpdateTotalPulse();
+
         if (stepIndex >= lines.Length)
+        {
+            pulseActive = true;
             return;
+        }
 
         if (timer > 0f)
         {
@@ -89,6 +114,28 @@ public class StatisticsUI : MonoBehaviour
         showing = false;
     }
 
+    private async void SubmitScoreSafe()
+    {
+        if (submitted)
+            return;
+
+        submitted = true;
+
+        await runStatsManager.SubmitScoreAsync();
+    }
+
+    private void UpdateTotalPulse()
+    {
+        if (!pulseActive)
+            return;
+
+        pulseTimer += Time.unscaledDeltaTime * pulseSpeed;
+
+        float scale = 1f + Mathf.Sin(pulseTimer) * pulseAmplitude;
+
+        totalScoreText.transform.localScale = baseScale * scale;
+    }
+
     private void StartCounting()
     {
         startValue = 0;
@@ -110,6 +157,7 @@ public class StatisticsUI : MonoBehaviour
             case 3: return stats.playerLevel * 50;
             case 4: return -Mathf.RoundToInt(stats.enemyKillTimePenalty * 0.5f);
             case 5: return stats.noDamageLevels * 300;
+            case 6: return stats.levelsCompleted == 4 ? 1000 : 0;
         }
 
         return 0;
@@ -125,6 +173,7 @@ public class StatisticsUI : MonoBehaviour
         SetLine(3, "Уровень персонажа", stats.playerLevel.ToString());
         SetLine(4, "Скорость убийства", Mathf.RoundToInt(stats.enemyKillTimePenalty).ToString());
         SetLine(5, "Уровни без потерь", stats.noDamageLevels.ToString());
+        SetLine(6, "Бонус за прохождение", stats.levelsCompleted == 4 ? "Да" : "Нет");
     }
 
     private void SetLine(int index, string label, string value)

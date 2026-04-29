@@ -1,10 +1,14 @@
 using UnityEngine;
+using System.Threading.Tasks;
 
 public class RunStatsManager : MonoBehaviour
 {
     [SerializeField] private VIPHealth vipHealth;
     [SerializeField] private PlayerXP playerXP;
     [SerializeField] private GameManager gameManager;
+    [SerializeField] private LeaderboardService leaderboardService;
+
+    private bool _submitted;
 
     public void OnVictoryLevelCompleted()
     {
@@ -12,6 +16,7 @@ public class RunStatsManager : MonoBehaviour
         RunStats.Instance.levelsCompleted++;
         RunStats.Instance.totalTime += gameManager.LevelDuration;
         RunStats.Instance.heartsLost += Mathf.RoundToInt(vipHealth.MaxHealth - vipHealth.CurrentHealth);
+
         if (vipHealth.MaxHealth == vipHealth.CurrentHealth)
             RunStats.Instance.noDamageLevels++;
     }
@@ -23,26 +28,23 @@ public class RunStatsManager : MonoBehaviour
         RunStats.Instance.heartsLost += Mathf.RoundToInt(vipHealth.MaxHealth - vipHealth.CurrentHealth);
     }
 
-    public void AddEnemyKillTimePenalty(float value) => RunStats.Instance.enemyKillTimePenalty += value;
+    public void AddEnemyKillTimePenalty(float value)
+        => RunStats.Instance.enemyKillTimePenalty += value;
 
-    public int CalculateScore()
+    public async Task SubmitScoreAsync()
     {
-        int score = 0;
+        if (_submitted)
+            return;
 
-        score += Mathf.RoundToInt(RunStats.Instance.totalTime * 2f);
-        score -= RunStats.Instance.heartsLost * 100;
-        score += RunStats.Instance.levelsCompleted * 300;
-        score += RunStats.Instance.playerLevel * 50;
-        score -= Mathf.RoundToInt(RunStats.Instance.enemyKillTimePenalty * 0.5f);
+        int score = RunStats.Instance.CalculateTotalScore();
 
-        if (RunStats.Instance.levelsCompleted == 4)
-            score += 1000;
+        bool isNewBest = PlayerProfile.TrySetBestScore(score);
 
-        score += RunStats.Instance.noDamageLevels * 300;
+        if (!isNewBest)
+            return;
 
-        if (score < 0) 
-            score = 0;
+        _submitted = true;
 
-        return score;
+        await leaderboardService.SubmitScoreAsync(score);
     }
 }

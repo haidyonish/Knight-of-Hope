@@ -34,7 +34,9 @@ public class PlayerInput : MonoBehaviour
     private void Update()
     {
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
-            gameManager.TogglePause();
+        {
+            gameManager?.TogglePause();
+        }
     }
 
     private void OnDisable()

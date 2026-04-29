@@ -1,0 +1,81 @@
+using System.Collections.Generic;
+using UnityEngine;
+using Leadr.Models;
+
+public class LeaderboardUI : MonoBehaviour
+{
+    [Header("Refs")]
+    [SerializeField] private LeaderboardService leaderboardService;
+    [SerializeField] private Transform contentParent;
+    [SerializeField] private LeaderboardItemUI itemPrefab;
+
+    [Header("Settings")]
+    [SerializeField] private int topCount = 10;
+    [SerializeField] private float requestCooldown = 0.5f;
+
+    private readonly List<GameObject> _items = new();
+
+    private bool isLoading = false;
+    private float lastRequestTime = -10f;
+
+    public async void Refresh()
+    {
+        if (isLoading)
+            return;
+
+        if (Time.unscaledTime - lastRequestTime < requestCooldown)
+            return;
+
+        lastRequestTime = Time.unscaledTime;
+        isLoading = true;
+
+        Clear();
+
+        var scores = await leaderboardService.GetTopAsync(topCount);
+
+        if (!this || !gameObject.activeInHierarchy)
+        {
+            isLoading = false;
+            return;
+        }
+
+        if (scores == null)
+        {
+            Debug.LogWarning("[LeaderboardUI] No scores loaded");
+            isLoading = false;
+            return;
+        }
+
+        foreach (var score in scores)
+        {
+            var item = Instantiate(itemPrefab, contentParent);
+
+            item.Setup(
+                score.Rank,
+                score.PlayerName,
+                (long)score.Value
+            );
+
+            _items.Add(item.gameObject);
+        }
+
+        isLoading = false;
+    }
+
+    private void Clear()
+    {
+        foreach (var item in _items)
+        {
+            if (item)
+                Destroy(item);
+        }
+
+        _items.Clear();
+    }
+
+    private void OnDisable()
+    {
+        Clear();
+        isLoading = false;
+    }
+}

@@ -1,11 +1,17 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class MainMenu : MonoBehaviour
 {
     [Header("Panels")]
     [SerializeField] private RectTransform credits;
     [SerializeField] private RectTransform settings;
+    [SerializeField] private RectTransform leaderboard;
+    [SerializeField] private GameObject nameInputPanel;
+
+    [Header("Leaderboard")]
+    [SerializeField] private LeaderboardUI leaderboardUI;
 
     [Header("Animation")]
     [SerializeField] private float animationSpeed = 8f;
@@ -15,20 +21,31 @@ public class MainMenu : MonoBehaviour
 
     private Vector2 creditsTarget;
     private Vector2 settingsTarget;
+    private Vector2 leaderboardTarget;
 
     private void Awake()
     {
         credits.anchoredPosition = hiddenPos;
         settings.anchoredPosition = hiddenPos;
+        leaderboard.anchoredPosition = hiddenPos;
 
         creditsTarget = hiddenPos;
         settingsTarget = hiddenPos;
+        leaderboardTarget = hiddenPos;
+
+        PlayerProfile.Load();
+
+        if (!PlayerProfile.HasName)
+        {
+            nameInputPanel.SetActive(true);
+        }
     }
 
     private void Update()
     {
         AnimatePanel(credits, creditsTarget);
         AnimatePanel(settings, settingsTarget);
+        AnimatePanel(leaderboard, leaderboardTarget);
     }
 
     public void StartGame()
@@ -40,11 +57,7 @@ public class MainMenu : MonoBehaviour
 
     public void ToggleCredits()
     {
-        bool isOpen =
-            Vector2.Distance(
-                creditsTarget,
-                shownPos
-            ) < 1f;
+        bool isOpen = Vector2.Distance(creditsTarget, shownPos) < 1f;
 
         if (isOpen)
         {
@@ -53,17 +66,15 @@ public class MainMenu : MonoBehaviour
         else
         {
             creditsTarget = shownPos;
+
             settingsTarget = hiddenPos;
+            leaderboardTarget = hiddenPos;
         }
     }
 
     public void ToggleSettings()
     {
-        bool isOpen =
-            Vector2.Distance(
-                settingsTarget,
-                shownPos
-            ) < 1f;
+        bool isOpen = Vector2.Distance(settingsTarget, shownPos) < 1f;
 
         if (isOpen)
         {
@@ -72,7 +83,28 @@ public class MainMenu : MonoBehaviour
         else
         {
             settingsTarget = shownPos;
+
             creditsTarget = hiddenPos;
+            leaderboardTarget = hiddenPos;
+        }
+    }
+
+    public void ToggleLeaderboard()
+    {
+        bool isOpen = Vector2.Distance(leaderboardTarget, shownPos) < 1f;
+
+        if (isOpen)
+        {
+            leaderboardTarget = hiddenPos;
+        }
+        else
+        {
+            leaderboardTarget = shownPos;
+
+            creditsTarget = hiddenPos;
+            settingsTarget = hiddenPos;
+
+            leaderboardUI.Refresh();
         }
     }
 
@@ -85,16 +117,12 @@ public class MainMenu : MonoBehaviour
 #endif
     }
 
-    private void AnimatePanel(
-        RectTransform panel,
-        Vector2 target)
+    private void AnimatePanel(RectTransform panel, Vector2 target)
     {
-        panel.anchoredPosition =
-            Vector2.Lerp(
-                panel.anchoredPosition,
-                target,
-                animationSpeed *
-                Time.unscaledDeltaTime
-            );
+        panel.anchoredPosition = Vector2.Lerp(
+            panel.anchoredPosition,
+            target,
+            animationSpeed * Time.unscaledDeltaTime
+        );
     }
 }
