@@ -10392,6 +10392,7 @@ MonoBehaviour:
   - {fileID: 917535396}
   upgradePanel: {fileID: 743088258}
   playerXP: {fileID: 719030656}
+  playerInput: {fileID: 719030652}
   inputBlocker: {fileID: 545767606}
   inputBlockTime: 0.4
   damageMultiplierCard: {fileID: -3536757322445798792, guid: 8bbd22457be2755478c7a3f2e6894ae5, type: 3}

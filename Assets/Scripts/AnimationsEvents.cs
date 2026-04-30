@@ -12,6 +12,15 @@ public class AnimationsEvents : MonoBehaviour
     }
 
     private void Attack() => entityCombat.DamageTargets();
+
     private void DisableMovementAndJump() => entityMovement.SetMovementEnabled(false);
     private void EnableMovementAndJump() => entityMovement.SetMovementEnabled(true);
+
+    private void AttackFinished()
+    {
+        if (entityCombat is EnemyCombat enemy)
+        {
+            enemy.OnAttackFinished();
+        }
+    }
 }

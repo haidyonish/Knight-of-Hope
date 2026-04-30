@@ -51,8 +51,6 @@ public class StatisticsUI : MonoBehaviour
         int score = RunStats.Instance.CalculateTotalScore();
         baseScale = totalScoreText.transform.localScale;
 
-        PlayerProfile.TrySetBestScore(score);
-
         SubmitScoreSafe();
 
         SetupTexts();

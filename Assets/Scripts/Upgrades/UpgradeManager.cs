@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class UpgradeManager : MonoBehaviour
 {
@@ -7,6 +8,7 @@ public class UpgradeManager : MonoBehaviour
     [SerializeField] private CardUI[] cards;
     [SerializeField] private GameObject upgradePanel;
     [SerializeField] private PlayerXP playerXP;
+    [SerializeField] private PlayerInput playerInput;
     [SerializeField] private GameObject inputBlocker;
     [SerializeField] private float inputBlockTime = 0.6f;
 
@@ -57,14 +59,13 @@ public class UpgradeManager : MonoBehaviour
     public void ShowUpgrades()
     {
         Time.timeScale = 0f;
-
+        playerInput.DisableInput();
         List<Upgrade> selectedUpgrades = GetRandomUpgrades(3);
 
         for (int i = 0; i < selectedUpgrades.Count; i++)
             cards[i].SetUpgrade(selectedUpgrades[i]);
 
         upgradePanel.SetActive(true);
-
         inputBlocker.SetActive(true);
         inputBlockTimer = inputBlockTime;
         isBlockingInput = true;
@@ -82,6 +83,7 @@ public class UpgradeManager : MonoBehaviour
         Time.timeScale = 1f;
 
         playerXP.FinishUpgradeSelection();
+        playerInput.EnableInput();
     }
 
     private List<Upgrade> GetRandomUpgrades(int count)

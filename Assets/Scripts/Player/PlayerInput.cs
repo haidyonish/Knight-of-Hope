@@ -1,17 +1,14 @@
-using System;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
-using UnityEngine.Windows;
 
 public class PlayerInput : MonoBehaviour
 {
     private PlayerInputActions input;
     private PlayerMovement movement;
     [SerializeField] private GameManager gameManager;
-    PlayerCombat combat;
+    private PlayerCombat combat;
 
+    private bool _inputEnabled = true;
 
     private void Awake()
     {
@@ -33,6 +30,9 @@ public class PlayerInput : MonoBehaviour
 
     private void Update()
     {
+        if (!_inputEnabled)
+            return;
+
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             gameManager?.TogglePause();
@@ -50,18 +50,40 @@ public class PlayerInput : MonoBehaviour
         input.Disable();
     }
 
+    public void EnableInput()
+    {
+        _inputEnabled = true;
+    }
+
+    public void DisableInput()
+    {
+        _inputEnabled = false;
+
+        input.Player.Move.Disable();
+        input.Player.Move.Enable();
+    }
+
     private void OnAttack(InputAction.CallbackContext context)
     {
+        if (!_inputEnabled)
+            return;
+
         combat.RequestAttack();
     }
 
     private void OnMove(InputAction.CallbackContext context)
     {
+        if (!_inputEnabled)
+            return;
+
         movement.SetMoveInput(context.ReadValue<Vector2>());
     }
 
     private void OnJump(InputAction.CallbackContext context)
     {
+        if (!_inputEnabled)
+            return;
+
         movement.RequestJump();
     }
 }

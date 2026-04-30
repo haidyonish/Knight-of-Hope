@@ -28,6 +28,12 @@ public class SettingsMenu : MonoBehaviour
         "Вы можете сменить имя. Оно обновится в таблице лидеров";
 
     private bool isUpdating = false;
+    private bool _destroyed = false;
+
+    private void OnDestroy()
+    {
+        _destroyed = true;
+    }
 
     private void Start()
     {
@@ -102,7 +108,8 @@ public class SettingsMenu : MonoBehaviour
         if (bestScore <= 0 || leaderboardService == null)
             return;
 
-        applyButton.interactable = false;
+        if (applyButton != null)
+            applyButton.interactable = false;
 
         try
         {
@@ -114,7 +121,8 @@ public class SettingsMenu : MonoBehaviour
         }
         finally
         {
-            applyButton.interactable = true;
+            if (!_destroyed && applyButton != null)
+                applyButton.interactable = true;
         }
     }
 
