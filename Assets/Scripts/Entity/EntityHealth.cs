@@ -38,22 +38,32 @@ public abstract class EntityHealth : MonoBehaviour
 
     public virtual void TakeDamage(float damage)
     {
+        TakeDamage(damage, 0f, Vector2.zero);
+    }
+
+    public virtual void TakeDamage(float damage, float knockback, Vector2 sourcePosition)
+    {
         currentHealth -= damage;
+
+        ApplyKnockback(knockback, sourcePosition);
+
         PlayDamageFeedback();
+
         if (currentHealth <= 0)
         {
             Die();
         }
     }
 
-    public virtual void TakeDamage(float damage, float knockback, Vector2 sourcePosition)
+    protected virtual void ApplyKnockback(float knockback, Vector2 sourcePosition)
     {
-        currentHealth -= damage;
-        PlayDamageFeedback();
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
+        if (rigitbody == null || knockback <= 0f)
+            return;
+
+        Vector2 direction =
+            (transform.position - (Vector3)sourcePosition).normalized;
+
+        rigitbody.AddForce(direction * knockback, ForceMode2D.Impulse);
     }
 
     protected void PlayDamageFeedback()

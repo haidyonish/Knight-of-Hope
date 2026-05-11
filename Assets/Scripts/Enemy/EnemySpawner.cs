@@ -41,11 +41,10 @@ public class EnemySpawner : MonoBehaviour
 
             nextSpawnTime = gameManager.CurrentTime + currentCooldown;
 
-            currentCooldown =
-                Mathf.Max(
-                    currentCooldown - currentWave.spawnAcceleration,
-                    currentWave.minCooldown
-                );
+            currentCooldown = Mathf.Max(
+                currentCooldown - currentWave.spawnAcceleration,
+                currentWave.minCooldown
+            );
         }
     }
 
@@ -68,7 +67,7 @@ public class EnemySpawner : MonoBehaviour
 
     private void SpawnEnemies(int count)
     {
-        if (currentWave.enemyPrefabs.Count == 0)
+        if (currentWave.enemies.Count == 0)
             return;
 
         count = Mathf.Min(count, spawnPoints.Length);
@@ -84,18 +83,94 @@ public class EnemySpawner : MonoBehaviour
         {
             Transform point = spawnPoints[indices[i]];
 
-            GameObject prefab =
-                currentWave.enemyPrefabs[
-                    Random.Range(0, currentWave.enemyPrefabs.Count)];
+            GameObject prefab = GetRandomEnemyPrefab();
 
             GameObject enemy =
                 Instantiate(prefab, point.position, Quaternion.identity);
-            enemy.GetComponent<EnemyHealth>().SetPlayerXP(playerXP);
-            enemy.GetComponent<EnemyHealth>().SetSoundManager(soundManager);
-            enemy.GetComponent<EnemyHealth>().SetRunStatsManager(runStatsManager);
-            enemy.GetComponent<EnemyCombat>().SetSoundManager(soundManager);
-            enemy.GetComponent<EnemyMovement>().SetTargets(player, vip);
+
+            EnemyHealth health = enemy.GetComponent<EnemyHealth>();
+
+            if (health != null)
+            {
+                health.SetPlayerXP(playerXP);
+                health.SetSoundManager(soundManager);
+                health.SetRunStatsManager(runStatsManager);
+
+                health.ApplyHealthMultiplier(
+                    currentWave.healthMultiplier
+                );
+            }
+
+            EnemyCombat combat = enemy.GetComponent<EnemyCombat>();
+
+            if (combat != null)
+            {
+                combat.SetSoundManager(soundManager);
+
+                combat.ApplyDamageMultiplier(
+                    currentWave.damageMultiplier
+                );
+            }
+
+            EnemyMovement movement = enemy.GetComponent<EnemyMovement>();
+
+            if (movement != null)
+            {
+                movement.SetTargets(player, vip);
+
+                movement.ApplySpeedMultiplier(
+                    currentWave.speedMultiplier
+                );
+            }
+
+            RangedEnemyMovement rangedMovement =
+                enemy.GetComponent<RangedEnemyMovement>();
+
+            if (rangedMovement != null)
+            {
+                rangedMovement.SetTarget(vip);
+
+                rangedMovement.ApplySpeedMultiplier(
+                    currentWave.speedMultiplier
+                );
+            }
+
+            RangedEnemyCombat rangedCombat =
+                enemy.GetComponent<RangedEnemyCombat>();
+
+            if (rangedCombat != null)
+            {
+                rangedCombat.SetSoundManager(soundManager);
+
+                rangedCombat.ApplyDamageMultiplier(
+                    currentWave.damageMultiplier
+                );
+            }
         }
+    }
+
+    private GameObject GetRandomEnemyPrefab()
+    {
+        int totalWeight = 0;
+
+        foreach (var enemy in currentWave.enemies)
+        {
+            totalWeight += enemy.weight;
+        }
+
+        int random = Random.Range(0, totalWeight);
+
+        int current = 0;
+
+        foreach (var enemy in currentWave.enemies)
+        {
+            current += enemy.weight;
+
+            if (random < current)
+                return enemy.prefab;
+        }
+
+        return currentWave.enemies[0].prefab;
     }
 
     private void Shuffle(int[] array)
@@ -103,6 +178,7 @@ public class EnemySpawner : MonoBehaviour
         for (int i = array.Length - 1; i > 0; i--)
         {
             int j = Random.Range(0, i + 1);
+
             (array[i], array[j]) = (array[j], array[i]);
         }
     }

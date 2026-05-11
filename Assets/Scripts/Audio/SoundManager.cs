@@ -26,6 +26,10 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private SoundData swordHitEnemy;
     [SerializeField] private SoundData swordSwing;
     [SerializeField] private SoundData cardsReveal;
+    [SerializeField] private SoundData daggerSwing;
+    [SerializeField] private SoundData daggerHit;
+    [SerializeField] private SoundData rockThrow;
+    [SerializeField] private SoundData rockHit;
 
     [Header("UI")]
     [SerializeField] private SoundData buttonClick;
@@ -130,6 +134,10 @@ public class SoundManager : MonoBehaviour
     public void PlaySwordHitEnemy() => Play(swordHitEnemy);
     public void PlaySwordSwing() => Play(swordSwing);
     public void PlayCardsReveal() => Play(cardsReveal);
+    public void PlayDaggerSwing() => Play(daggerSwing);
+    public void PlayDaggerHit() => Play(daggerHit);
+    public void PlayRockThrow() => Play(rockThrow);
+    public void PlayRockHit() => Play(rockHit);
 
     // UI
     public void PlayButtonClick() => Play(buttonClick, true);

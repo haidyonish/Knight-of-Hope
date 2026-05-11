@@ -4,14 +4,26 @@ public class EnemyCombat : EntityCombat
 {
     private SoundManager soundManager;
 
-    [SerializeField] private float damage = 5;
-    [SerializeField] private float range = 1f;
+    [Header("Damage")]
+    [SerializeField] private float damage = 5f;
+
+    [Header("Attack Point")]
+    [SerializeField] private Transform attackPoint;
+
+    [SerializeField]
+    private Vector2 attackSize =
+        new Vector2(1f, 1f);
 
     private bool _isAttacking;
 
     public void SetSoundManager(SoundManager soundManager)
     {
         this.soundManager = soundManager;
+    }
+
+    public void ApplyDamageMultiplier(float multiplier)
+    {
+        damage *= multiplier;
     }
 
     private void FixedUpdate()
@@ -27,25 +39,35 @@ public class EnemyCombat : EntityCombat
         if (_isAttacking)
             return;
 
-        if (GetTargets(range).Length > 0)
+        if (GetTargets().Length > 0)
         {
             _isAttacking = true;
+
             animator.SetTrigger("Attack");
         }
     }
 
+    private Collider2D[] GetTargets()
+    {
+        return Physics2D.OverlapBoxAll(
+            attackPoint.position,
+            attackSize,
+            0f,
+            targetLayer
+        );
+    }
+
     public override void DamageTargets()
     {
-        Collider2D[] targets = GetTargets(range);
+        Collider2D[] targets = GetTargets();
 
         if (targets.Length > 0)
-        {
             soundManager?.PlayEnemyHit();
-        }
 
-        foreach (var t in targets)
+        foreach (var target in targets)
         {
-            EntityHealth health = t.GetComponent<EntityHealth>();
+            EntityHealth health =
+                target.GetComponent<EntityHealth>();
 
             if (health != null)
                 health.TakeDamage(damage);
@@ -57,8 +79,18 @@ public class EnemyCombat : EntityCombat
         _isAttacking = false;
     }
 
-    protected override float GetAttackRange()
+    protected override void OnDrawGizmos()
     {
-        return range;
+        showAttackGizmo = false;
+
+        if (attackPoint == null)
+            return;
+
+        Gizmos.color = Color.red;
+
+        Gizmos.DrawWireCube(
+            attackPoint.position,
+            attackSize
+        );
     }
 }

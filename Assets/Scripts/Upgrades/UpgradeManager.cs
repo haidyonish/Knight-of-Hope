@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 
 public class UpgradeManager : MonoBehaviour
 {
+    [SerializeField] private GameManager gameManager;
     [SerializeField] private PlayerStats playerStats;
     [SerializeField] private CardUI[] cards;
     [SerializeField] private GameObject upgradePanel;
@@ -18,11 +19,17 @@ public class UpgradeManager : MonoBehaviour
     [Header("Card Sprites")]
     [SerializeField] private Sprite damageMultiplierCard;
     [SerializeField] private Sprite swordDamageCard;
-    [SerializeField] private Sprite speedCard;
     [SerializeField] private Sprite swordRangeCard;
+    [SerializeField] private Sprite swordKnockback;
+    [SerializeField] private Sprite speedCard;
     [SerializeField] private Sprite maxHealthCard;
     [SerializeField] private Sprite regenCard;
     [SerializeField] private Sprite experienceCard;
+    [SerializeField] private Sprite daggerUnlockCard;
+    [SerializeField] private Sprite daggerDamageCard;
+    [SerializeField] private Sprite daggerCountCard;
+    [SerializeField] private Sprite daggerPenetrationCard;
+    [SerializeField] private Sprite scoreMultiplierCard;
 
     private List<Upgrade> upgrades = new List<Upgrade>();
 
@@ -32,11 +39,17 @@ public class UpgradeManager : MonoBehaviour
     {
         upgrades.Add(new DamageMultiplierUpgrade(damageMultiplierCard));
         upgrades.Add(new SwordDamageUpgrade(swordDamageCard));
-        upgrades.Add(new SpeedUpgrade(speedCard));
         upgrades.Add(new SwordRangeUpgrade(swordRangeCard));
+        upgrades.Add(new SwordKnockbackUpgrade(swordKnockback));
+        upgrades.Add(new SpeedUpgrade(speedCard));
         upgrades.Add(new MaxHealthUpgrade(maxHealthCard));
         upgrades.Add(new HealthRegenUpgrade(regenCard));
         upgrades.Add(new ExperienceUpgrade(experienceCard));
+        upgrades.Add(new DaggerUnlockUpgrade(daggerUnlockCard));
+        upgrades.Add(new DaggerDamageUpgrade(daggerDamageCard));
+        upgrades.Add(new DaggerCountUpgrade(daggerCountCard));
+        upgrades.Add(new DaggerPenetrationUpgrade(daggerPenetrationCard));
+        upgrades.Add(new ScoreMultiplierUpgrade(scoreMultiplierCard));
 
         LoadUpgradeLevels();
         ApplyLoadedUpgrades();
@@ -59,6 +72,7 @@ public class UpgradeManager : MonoBehaviour
     public void ShowUpgrades()
     {
         Time.timeScale = 0f;
+        CursorManager.ShowCursor();
         playerInput.DisableInput();
         List<Upgrade> selectedUpgrades = GetRandomUpgrades(3);
 
@@ -80,7 +94,12 @@ public class UpgradeManager : MonoBehaviour
         SaveUpgradeLevels();
 
         upgradePanel.SetActive(false);
-        Time.timeScale = 1f;
+        if (!gameManager.IsEnding)
+        {
+            CursorManager.HideCursor();
+        }
+        if (!gameManager.IsEnding)
+            Time.timeScale = 1f;
 
         playerXP.FinishUpgradeSelection();
         playerInput.EnableInput();
@@ -92,7 +111,7 @@ public class UpgradeManager : MonoBehaviour
 
         foreach (var upgrade in upgrades)
         {
-            if (upgrade.CanUpgrade())
+            if (upgrade.CanUpgrade(playerStats))
                 available.Add(upgrade);
         }
 
@@ -133,6 +152,15 @@ public class UpgradeManager : MonoBehaviour
             int savedLevel = upgrade.Level;
 
             upgrade.SetLevel(0);
+
+            bool isScoreMultiplier =
+                upgrade is ScoreMultiplierUpgrade;
+
+            if (isScoreMultiplier)
+            {
+                upgrade.SetLevel(savedLevel);
+                continue;
+            }
 
             for (int i = 0; i < savedLevel; i++)
                 upgrade.Apply(playerStats);

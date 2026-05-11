@@ -8,14 +8,13 @@ public class NicknameInputUI : MonoBehaviour
     [SerializeField] private TMP_Text messageText;
     [SerializeField] private GameObject panel;
 
-    [Header("Texts")]
-    [SerializeField]
-    private string defaultMessage =
-        "Введите имя, которое будет отображаться в таблице лидеров";
-
     private void Start()
     {
-        messageText.text = defaultMessage;
+        messageText.text =
+            LocalizationManager.Instance.GetText(
+                "nickname_input_default"
+            );
+
         inputField.characterLimit = 16;
     }
 
@@ -23,9 +22,15 @@ public class NicknameInputUI : MonoBehaviour
     {
         string input = inputField.text;
 
-        if (!NicknameValidator.TryValidate(input, out string error, out string clean))
+        if (!NicknameValidator.TryValidate(
+            input,
+            out string errorKey,
+            out string clean
+        ))
         {
-            messageText.text = error;
+            messageText.text =
+                LocalizationManager.Instance.GetText(errorKey);
+
             return;
         }
 

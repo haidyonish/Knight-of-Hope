@@ -14,6 +14,11 @@ public class EnemyWave
 
     public int enemiesPerSpawn = 1;
 
+    [Header("Difficulty")]
+    public float healthMultiplier = 1f;
+    public float damageMultiplier = 1f;
+    public float speedMultiplier = 1f;
+
     [Header("Enemies available")]
-    public List<GameObject> enemyPrefabs = new List<GameObject>();
+    public List<WeightedEnemy> enemies = new();
 }

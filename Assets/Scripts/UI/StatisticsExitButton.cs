@@ -1,21 +1,22 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class StatisticsExitButton : MonoBehaviour
 {
     [SerializeField] private RunStatsManager runStatsManager;
 
-    private bool _loading;
+    private bool loading;
 
     public async void OnClickExit()
     {
-        if (_loading)
+        if (loading)
             return;
 
-        _loading = true;
+        loading = true;
 
         await runStatsManager.SubmitScoreAsync();
 
-        SceneManager.LoadScene("MainMenu");
+        SlideShowManager.Instance.FadeToScene(
+            "MainMenu"
+        );
     }
 }

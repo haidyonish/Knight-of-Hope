@@ -14,6 +14,11 @@ public class EnemyMovement : EntityMovement
         this.vip = vip;
     }
 
+    public void ApplySpeedMultiplier(float multiplier)
+    {
+        moveSpeed *= multiplier;
+    }
+
     protected override void HandleMovement()
     {
         if (!canMove)

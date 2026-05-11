@@ -1,9 +1,15 @@
-using System.Collections.Generic;
-using UnityEngine;
 using Leadr.Models;
+using System.Collections.Generic;
+using TMPro;
+using UnityEngine;
 
 public class LeaderboardUI : MonoBehaviour
 {
+    [Header("Player")]
+    [SerializeField] private TMP_Text playerRankText;
+    [SerializeField] private TMP_Text playerNameText;
+    [SerializeField] private TMP_Text playerScoreText;
+
     [Header("Refs")]
     [SerializeField] private LeaderboardService leaderboardService;
     [SerializeField] private Transform contentParent;
@@ -59,7 +65,40 @@ public class LeaderboardUI : MonoBehaviour
             _items.Add(item.gameObject);
         }
 
+        await LoadPlayerScore();
+
         isLoading = false;
+    }
+
+    private async System.Threading.Tasks.Task LoadPlayerScore()
+    {
+        var myScore = await leaderboardService.GetMyScoreAsync();
+
+        if (!this || !gameObject.activeInHierarchy)
+            return;
+
+        if (myScore == null)
+        {
+            playerRankText.text = "-";
+            playerNameText.text =
+                string.IsNullOrEmpty(PlayerProfile.PlayerName)
+                ? "Unknown"
+                : PlayerProfile.PlayerName;
+
+            playerScoreText.text =
+                PlayerProfile.BestScore.ToString();
+
+            return;
+        }
+
+        playerRankText.text =
+            $"{myScore.Rank}";
+
+        playerNameText.text =
+            myScore.PlayerName;
+
+        playerScoreText.text =
+            myScore.Value.ToString();
     }
 
     private void Clear()

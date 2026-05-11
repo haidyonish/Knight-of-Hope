@@ -16,6 +16,9 @@ public class MainMenu : MonoBehaviour
     [Header("Animation")]
     [SerializeField] private float animationSpeed = 8f;
 
+    [Header("Intro")]
+    [SerializeField] private IntroSlides introSlides;
+
     private readonly Vector2 hiddenPos = new Vector2(350f, -1000f);
     private readonly Vector2 shownPos = new Vector2(350f, 0f);
 
@@ -51,8 +54,10 @@ public class MainMenu : MonoBehaviour
     public void StartGame()
     {
         RunData.Instance.ResetRun();
+
         RunStats.Instance.ResetStats();
-        SceneManager.LoadScene("Level1");
+
+        introSlides.Play();
     }
 
     public void ToggleCredits()

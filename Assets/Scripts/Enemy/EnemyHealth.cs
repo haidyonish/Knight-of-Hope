@@ -2,9 +2,12 @@ using UnityEngine;
 
 public class EnemyHealth : EntityHealth
 {
+    [SerializeField] private EnemyHealthBar healthBar;
+
     private SoundManager soundManager;
     private PlayerXP playerXP;
     private RunStatsManager runStatsManager;
+
     private float enterTime;
     private bool hasEntered = false;
 
@@ -25,10 +28,24 @@ public class EnemyHealth : EntityHealth
         this.runStatsManager = runStatsManager;
     }
 
-    public override void TakeDamage(float damage)
+    public void ApplyHealthMultiplier(float multiplier)
     {
-        base.TakeDamage(damage);
-        soundManager.PlayEnemyHit();
+        maxHealth *= multiplier;
+        currentHealth = maxHealth;
+    }
+
+    public override void TakeDamage(
+        float damage,
+        float knockback,
+        Vector2 sourcePosition
+    )
+    {
+        base.TakeDamage(damage, knockback, sourcePosition);
+
+        if (currentHealth > 0)
+            soundManager.PlayEnemyHit();
+
+        healthBar.Show(CurrentHealth, MaxHealth);
     }
 
     public void OnEnterLevel()
@@ -40,11 +57,21 @@ public class EnemyHealth : EntityHealth
     {
         base.Die();
 
-        float lifeTime = enterTime > 0f ? Time.time - enterTime : 0f;
+        float lifeTime =
+            enterTime > 0f
+            ? Time.time - enterTime
+            : 0f;
+
         lifeTime = Mathf.Max(0f, lifeTime);
-        runStatsManager.AddEnemyKillTimePenalty(lifeTime);
+
+        float maxTime = 10f;
+
+        float bonus = Mathf.Max(0f, maxTime - lifeTime);
+
+        runStatsManager.AddEnemyKillSpeedBonus(bonus);
 
         soundManager.PlayEnemyDeath();
+
         playerXP.AddXP(xpAmount);
     }
 
@@ -53,7 +80,8 @@ public class EnemyHealth : EntityHealth
         if (hasEntered)
             return;
 
-        if (other.gameObject.layer == LayerMask.NameToLayer("EnemyEnter"))
+        if (other.gameObject.layer ==
+            LayerMask.NameToLayer("EnemyEnter"))
         {
             hasEntered = true;
             enterTime = Time.time;

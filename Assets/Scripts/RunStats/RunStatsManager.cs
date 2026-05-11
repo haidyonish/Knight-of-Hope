@@ -13,9 +13,13 @@ public class RunStatsManager : MonoBehaviour
     public void OnVictoryLevelCompleted()
     {
         RunStats.Instance.playerLevel = playerXP.Level;
+
         RunStats.Instance.levelsCompleted++;
+
         RunStats.Instance.totalTime += gameManager.LevelDuration;
-        RunStats.Instance.heartsLost += Mathf.RoundToInt(vipHealth.MaxHealth - vipHealth.CurrentHealth);
+
+        RunStats.Instance.heartsSaved +=
+            Mathf.RoundToInt(vipHealth.CurrentHealth);
 
         if (vipHealth.MaxHealth == vipHealth.CurrentHealth)
             RunStats.Instance.noDamageLevels++;
@@ -24,12 +28,17 @@ public class RunStatsManager : MonoBehaviour
     public void OnDefeatLevelCompleted()
     {
         RunStats.Instance.playerLevel = playerXP.Level;
+
         RunStats.Instance.totalTime += gameManager.CurrentTime;
-        RunStats.Instance.heartsLost += Mathf.RoundToInt(vipHealth.MaxHealth - vipHealth.CurrentHealth);
+
+        RunStats.Instance.heartsSaved +=
+            Mathf.RoundToInt(vipHealth.CurrentHealth);
     }
 
-    public void AddEnemyKillTimePenalty(float value)
-        => RunStats.Instance.enemyKillTimePenalty += value;
+    public void AddEnemyKillSpeedBonus(float value)
+    {
+        RunStats.Instance.enemyKillSpeedBonus += value;
+    }
 
     public async Task SubmitScoreAsync()
     {

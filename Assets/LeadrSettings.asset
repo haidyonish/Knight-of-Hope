@@ -15,4 +15,4 @@ MonoBehaviour:
   gameId: gam_db902406-b989-442a-9185-50fa56ca21b1
   baseUrl: https://api.leadrcloud.com
   debugLogging: 0
-  testMode: 1
+  testMode: 0

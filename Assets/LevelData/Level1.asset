@@ -18,22 +18,37 @@ MonoBehaviour:
     spawnAcceleration: 0.04
     minCooldown: 1
     enemiesPerSpawn: 1
-    enemyPrefabs:
-    - {fileID: 3856382078754492760, guid: a1284b4791af6b846a0f9541c0dafd8f, type: 3}
-  - startTime: 20
+    healthMultiplier: 1
+    damageMultiplier: 1
+    speedMultiplier: 1
+    enemies:
+    - prefab: {fileID: 2232846932028646029, guid: e5ca3e956db735e4a9ac7cb7fda25f2d, type: 3}
+      weight: 10
+  - startTime: 30
     spawnCooldown: 10
     spawnAcceleration: 0.25
     minCooldown: 5
     enemiesPerSpawn: 3
-    enemyPrefabs:
-    - {fileID: 3856382078754492760, guid: a1284b4791af6b846a0f9541c0dafd8f, type: 3}
-    - {fileID: 2232846932028646029, guid: e5ca3e956db735e4a9ac7cb7fda25f2d, type: 3}
-  - startTime: 40
-    spawnCooldown: 11.5
+    healthMultiplier: 1
+    damageMultiplier: 1.1
+    speedMultiplier: 1.025
+    enemies:
+    - prefab: {fileID: 2232846932028646029, guid: e5ca3e956db735e4a9ac7cb7fda25f2d, type: 3}
+      weight: 15
+    - prefab: {fileID: 3856382078754492760, guid: a1284b4791af6b846a0f9541c0dafd8f, type: 3}
+      weight: 10
+  - startTime: 60
+    spawnCooldown: 10
     spawnAcceleration: 0.5
     minCooldown: 5
-    enemiesPerSpawn: 5
-    enemyPrefabs:
-    - {fileID: 3856382078754492760, guid: a1284b4791af6b846a0f9541c0dafd8f, type: 3}
-    - {fileID: 2232846932028646029, guid: e5ca3e956db735e4a9ac7cb7fda25f2d, type: 3}
-    - {fileID: 8012294272732599024, guid: 34772726cf662c84b9268fea18f459d3, type: 3}
+    enemiesPerSpawn: 4
+    healthMultiplier: 1.1
+    damageMultiplier: 1.15
+    speedMultiplier: 1.05
+    enemies:
+    - prefab: {fileID: 2232846932028646029, guid: e5ca3e956db735e4a9ac7cb7fda25f2d, type: 3}
+      weight: 15
+    - prefab: {fileID: 3856382078754492760, guid: a1284b4791af6b846a0f9541c0dafd8f, type: 3}
+      weight: 15
+    - prefab: {fileID: 8012294272732599024, guid: 34772726cf662c84b9268fea18f459d3, type: 3}
+      weight: 10

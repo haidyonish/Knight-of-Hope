@@ -9,34 +9,46 @@ public class PlayerHealth : EntityHealth
 
     private PlayerStats stats;
 
+    private PlayerStats Stats
+    {
+        get
+        {
+            if (stats == null)
+                stats = GetComponent<PlayerStats>();
+
+            return stats;
+        }
+    }
+
     protected override void Awake()
     {
-        stats = GetComponent<PlayerStats>();
+        maxHealth = Stats.MaxHealth;
 
-        maxHealth = stats.MaxHealth;
         base.Awake();
     }
 
     private void Start()
     {
-        statBars.SetHPInstant(currentHealth / stats.MaxHealth);
+        if (statBars != null)
+            statBars.SetHPInstant(currentHealth / Stats.MaxHealth);
     }
 
     protected override void Update()
     {
         base.Update();
 
-        if (stats.Regen > 0f && currentHealth < stats.MaxHealth)
+        if (Stats.Regen > 0f && currentHealth < Stats.MaxHealth)
         {
             currentHealth +=
-                stats.Regen *
+                Stats.Regen *
                 Time.deltaTime *
                 regenEfficiency;
 
             currentHealth =
-                Mathf.Min(currentHealth, stats.MaxHealth);
+                Mathf.Min(currentHealth, Stats.MaxHealth);
 
-            statBars.SetHP(currentHealth / stats.MaxHealth);
+            if (statBars != null)
+                statBars.SetHP(currentHealth / Stats.MaxHealth);
         }
     }
 
@@ -44,7 +56,9 @@ public class PlayerHealth : EntityHealth
     {
         base.TakeDamage(damage);
 
-        statBars.SetHP(currentHealth / stats.MaxHealth);
+        if (statBars != null)
+            statBars.SetHP(currentHealth / Stats.MaxHealth);
+
         soundManager.PlayPlayerHurt();
     }
 
@@ -53,14 +67,16 @@ public class PlayerHealth : EntityHealth
         currentHealth += amount;
 
         currentHealth =
-            Mathf.Min(currentHealth, stats.MaxHealth);
+            Mathf.Min(currentHealth, Stats.MaxHealth);
 
-        statBars.SetHP(currentHealth / stats.MaxHealth);
+        if (statBars != null)
+            statBars.SetHP(currentHealth / Stats.MaxHealth);
     }
 
     protected override void Die()
     {
         base.Die();
+
         gameManager.GameOver();
     }
 }

@@ -53,14 +53,18 @@ public class PlayerInput : MonoBehaviour
     public void EnableInput()
     {
         _inputEnabled = true;
+
+        Vector2 currentMove =
+            input.Player.Move.ReadValue<Vector2>();
+
+        movement.SetMoveInput(currentMove);
     }
 
     public void DisableInput()
     {
         _inputEnabled = false;
 
-        input.Player.Move.Disable();
-        input.Player.Move.Enable();
+        movement.SetMoveInput(Vector2.zero);
     }
 
     private void OnAttack(InputAction.CallbackContext context)

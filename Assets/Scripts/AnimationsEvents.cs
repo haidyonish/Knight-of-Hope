@@ -4,11 +4,13 @@ public class AnimationsEvents : MonoBehaviour
 {
     private EntityMovement entityMovement;
     private EntityCombat entityCombat;
+    private RangedEnemyCombat rangedCombat;
 
     private void Awake()
     {
         entityMovement = GetComponentInParent<EntityMovement>();
         entityCombat = GetComponentInParent<EntityCombat>();
+        rangedCombat = GetComponentInParent<RangedEnemyCombat>();
     }
 
     private void Attack() => entityCombat.DamageTargets();
@@ -22,5 +24,9 @@ public class AnimationsEvents : MonoBehaviour
         {
             enemy.OnAttackFinished();
         }
+    }
+    private void ThrowRock()
+    {
+        rangedCombat?.ThrowRock();
     }
 }

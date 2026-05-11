@@ -14,7 +14,7 @@ public abstract class Upgrade
     public int Level => level;
     public int MaxLevel => maxLevel;
 
-    public bool CanUpgrade()
+    public virtual bool CanUpgrade(PlayerStats stats)
     {
         return level < maxLevel;
     }

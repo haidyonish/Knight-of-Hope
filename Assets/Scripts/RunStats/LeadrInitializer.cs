@@ -23,11 +23,6 @@ public class LeadrInitializer : MonoBehaviour
     private void Initialize()
     {
         LeadrClient.Instance.Initialize(settings);
-
-#if UNITY_EDITOR
-        Debug.Log("[Leadr] Initialized");
-#endif
-
         _initialized = true;
     }
 }

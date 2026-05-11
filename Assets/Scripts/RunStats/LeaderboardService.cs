@@ -61,4 +61,24 @@ public class LeaderboardService : MonoBehaviour
         Debug.LogError($"[Leaderboard] Load failed: {result.Error.Message}");
         return null;
     }
+
+    public async Task<Score> GetMyScoreAsync()
+    {
+        var result =
+            await LeadrClient.Instance.GetMyScoresAsync(leaderboardId, 1);
+
+        if (!result.IsSuccess)
+        {
+            Debug.LogError(
+                $"[Leaderboard] {result.Error.Message}"
+            );
+
+            return null;
+        }
+
+        if (result.Data.Items.Count <= 0)
+            return null;
+
+        return result.Data.Items[0];
+    }
 }

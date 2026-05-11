@@ -48,10 +48,15 @@ public class PlayerXP : MonoBehaviour
         soundManager.PlayCardsReveal();
 
         currentXP -= XpToNextLevel;
+
         Level++;
+
+        SaveProgress();
+
         ui.UpdateLevelText(Level);
 
         isChoosingUpgrade = true;
+
         upgradeManager.ShowUpgrades();
     }
 

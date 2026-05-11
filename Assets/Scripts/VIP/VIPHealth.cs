@@ -24,6 +24,7 @@ public class VIPHealth : EntityHealth
         heartsUI.RefreshHearts();
         PlayHitSound();
         PlayDamageFeedback();
+        CameraShake.Instance.Shake();
 
         if (currentHealth <= 0)
             Die();

@@ -23,16 +23,20 @@ public class SettingsMenu : MonoBehaviour
     [SerializeField] private Button applyButton;
     [SerializeField] private LeaderboardService leaderboardService;
 
-    [SerializeField]
-    private string defaultNameMessage =
-        "Вы можете сменить имя. Оно обновится в таблице лидеров";
+    [SerializeField] private TMP_Dropdown languageDropdown;
+
+    [Header("Difficulty")]
+    [SerializeField] private GameObject difficultyPanel;
+
+    [SerializeField] private GameObject wandererSelected;
+    [SerializeField] private GameObject lastKnightSelected;
 
     private bool isUpdating = false;
-    private bool _destroyed = false;
+    private bool destroyed = false;
 
     private void OnDestroy()
     {
-        _destroyed = true;
+        destroyed = true;
     }
 
     private void Start()
@@ -46,62 +50,100 @@ public class SettingsMenu : MonoBehaviour
         sfxSlider.value = Snap(SettingsData.SFX);
         uiSlider.value = Snap(SettingsData.UI);
 
+        languageDropdown.value = (int)SettingsData.Language;
+
         isUpdating = false;
 
         UpdateTexts();
 
         PlayerProfile.Load();
 
-        currentNameText.text = $"Текущее имя: {PlayerProfile.PlayerName}";
+        RefreshLocalizedTexts();
 
-        nameMessage.text = defaultNameMessage;
-        nameInput.characterLimit = 16;
+        if (nameInput != null)
+            nameInput.characterLimit = 16;
+
+        RefreshDifficultyUI();
     }
 
     public void SetMaster(float value)
     {
-        if (isUpdating) return;
+        if (isUpdating)
+            return;
+
         Apply(ref SettingsData.Master, masterSlider, value);
     }
 
     public void SetMusic(float value)
     {
-        if (isUpdating) return;
+        if (isUpdating)
+            return;
+
         Apply(ref SettingsData.Music, musicSlider, value);
     }
 
     public void SetSFX(float value)
     {
-        if (isUpdating) return;
+        if (isUpdating)
+            return;
+
         Apply(ref SettingsData.SFX, sfxSlider, value);
     }
 
     public void SetUI(float value)
     {
-        if (isUpdating) return;
+        if (isUpdating)
+            return;
+
         Apply(ref SettingsData.UI, uiSlider, value);
+    }
+
+    public void SetLanguage(int index)
+    {
+        SettingsData.Language = (Language)index;
+
+        SettingsData.Save();
+
+        LocalizationManager.Instance.RefreshAll();
+
+        RefreshLocalizedTexts();
     }
 
     public async void ApplyName()
     {
         string input = nameInput.text;
 
-        if (!NicknameValidator.TryValidate(input, out string error, out string clean))
+        if (!NicknameValidator.TryValidate(
+            input,
+            out string errorKey,
+            out string clean
+        ))
         {
-            nameMessage.text = error;
+            nameMessage.text =
+                LocalizationManager.Instance.GetText(errorKey);
+
             return;
         }
 
         if (clean == PlayerProfile.PlayerName)
         {
-            nameMessage.text = "Это уже текущее имя";
+            nameMessage.text =
+                LocalizationManager.Instance.GetText(
+                    "settings_name_same"
+                );
+
             return;
         }
 
         PlayerProfile.SetName(clean);
 
-        currentNameText.text = $"Текущее имя: {clean}";
-        nameMessage.text = "Имя сохранено";
+        currentNameText.text =
+            $"{LocalizationManager.Instance.GetText("settings_current_name")} {clean}";
+
+        nameMessage.text =
+            LocalizationManager.Instance.GetText(
+                "settings_name_saved"
+            );
 
         int bestScore = PlayerProfile.BestScore;
 
@@ -117,12 +159,31 @@ public class SettingsMenu : MonoBehaviour
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"[SettingsMenu] Failed to submit score: {e}");
+            Debug.LogError(
+                $"[SettingsMenu] Failed to submit score: {e}"
+            );
         }
         finally
         {
-            if (!_destroyed && applyButton != null)
+            if (!destroyed && applyButton != null)
                 applyButton.interactable = true;
+        }
+    }
+
+    private void RefreshLocalizedTexts()
+    {
+        if (currentNameText != null)
+        {
+            currentNameText.text =
+                $"{LocalizationManager.Instance.GetText("settings_current_name")} {PlayerProfile.PlayerName}";
+        }
+
+        if (nameMessage != null)
+        {
+            nameMessage.text =
+                LocalizationManager.Instance.GetText(
+                    "settings_name_default_message"
+                );
         }
     }
 
@@ -133,10 +194,12 @@ public class SettingsMenu : MonoBehaviour
         float snapped = Snap(value);
 
         target = snapped;
+
         slider.value = snapped;
 
         UpdateTexts();
-        Save();
+
+        SettingsData.Save();
 
         isUpdating = false;
     }
@@ -149,18 +212,59 @@ public class SettingsMenu : MonoBehaviour
         uiText.text = $"{Mathf.RoundToInt(uiSlider.value * 100)}%";
     }
 
-    private void Save()
-    {
-        PlayerPrefs.SetFloat("Master", SettingsData.Master);
-        PlayerPrefs.SetFloat("Music", SettingsData.Music);
-        PlayerPrefs.SetFloat("SFX", SettingsData.SFX);
-        PlayerPrefs.SetFloat("UI", SettingsData.UI);
-
-        PlayerPrefs.Save();
-    }
-
     private float Snap(float value)
     {
         return Mathf.Round(value * 100f) / 100f;
+    }
+
+    public void OpenDifficultyPanel()
+    {
+        if (difficultyPanel == null)
+            return;
+
+        difficultyPanel.SetActive(true);
+
+        RefreshDifficultyUI();
+    }
+
+    public void CloseDifficultyPanel()
+    {
+        if (difficultyPanel == null)
+            return;
+
+        difficultyPanel.SetActive(false);
+    }
+
+    public void SelectWanderer()
+    {
+        DifficultyManager.CurrentDifficulty =
+            Difficulty.Wanderer;
+
+        RefreshDifficultyUI();
+
+        CloseDifficultyPanel();
+    }
+
+    public void SelectLastKnight()
+    {
+        DifficultyManager.CurrentDifficulty =
+            Difficulty.LastKnight;
+
+        RefreshDifficultyUI();
+
+        CloseDifficultyPanel();
+    }
+
+    private void RefreshDifficultyUI()
+    {
+        bool wanderer =
+            DifficultyManager.CurrentDifficulty ==
+            Difficulty.Wanderer;
+
+        if (wandererSelected != null)
+            wandererSelected.SetActive(wanderer);
+
+        if (lastKnightSelected != null)
+            lastKnightSelected.SetActive(!wanderer);
     }
 }
