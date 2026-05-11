@@ -50,7 +50,6 @@ public class UpgradeManager : MonoBehaviour
         upgrades.Add(new DaggerCountUpgrade(daggerCountCard));
         upgrades.Add(new DaggerPenetrationUpgrade(daggerPenetrationCard));
         upgrades.Add(new ScoreMultiplierUpgrade(scoreMultiplierCard));
-
         LoadUpgradeLevels();
         ApplyLoadedUpgrades();
     }
@@ -59,9 +58,7 @@ public class UpgradeManager : MonoBehaviour
     {
         if (!isBlockingInput)
             return;
-
         inputBlockTimer -= Time.unscaledDeltaTime;
-
         if (inputBlockTimer <= 0f)
         {
             isBlockingInput = false;
@@ -75,10 +72,8 @@ public class UpgradeManager : MonoBehaviour
         CursorManager.ShowCursor();
         playerInput.DisableInput();
         List<Upgrade> selectedUpgrades = GetRandomUpgrades(3);
-
         for (int i = 0; i < selectedUpgrades.Count; i++)
             cards[i].SetUpgrade(selectedUpgrades[i]);
-
         upgradePanel.SetActive(true);
         inputBlocker.SetActive(true);
         inputBlockTimer = inputBlockTime;
@@ -90,17 +85,12 @@ public class UpgradeManager : MonoBehaviour
         if (isBlockingInput)
             return;
         upgrade.Apply(playerStats);
-
         SaveUpgradeLevels();
-
         upgradePanel.SetActive(false);
         if (!gameManager.IsEnding)
-        {
             CursorManager.HideCursor();
-        }
         if (!gameManager.IsEnding)
             Time.timeScale = 1f;
-
         playerXP.FinishUpgradeSelection();
         playerInput.EnableInput();
     }
@@ -108,25 +98,19 @@ public class UpgradeManager : MonoBehaviour
     private List<Upgrade> GetRandomUpgrades(int count)
     {
         List<Upgrade> available = new List<Upgrade>();
-
         foreach (var upgrade in upgrades)
         {
             if (upgrade.CanUpgrade(playerStats))
                 available.Add(upgrade);
         }
-
         List<Upgrade> result = new List<Upgrade>();
-
         while (count > 0 && available.Count > 0)
         {
             int index = Random.Range(0, available.Count);
-
             result.Add(available[index]);
             available.RemoveAt(index);
-
             count--;
         }
-
         return result;
     }
 
@@ -150,21 +134,15 @@ public class UpgradeManager : MonoBehaviour
         foreach (var upgrade in upgrades)
         {
             int savedLevel = upgrade.Level;
-
             upgrade.SetLevel(0);
-
-            bool isScoreMultiplier =
-                upgrade is ScoreMultiplierUpgrade;
-
+            bool isScoreMultiplier = upgrade is ScoreMultiplierUpgrade;
             if (isScoreMultiplier)
             {
                 upgrade.SetLevel(savedLevel);
                 continue;
             }
-
             for (int i = 0; i < savedLevel; i++)
                 upgrade.Apply(playerStats);
-
             upgrade.SetLevel(savedLevel);
         }
     }
@@ -172,15 +150,7 @@ public class UpgradeManager : MonoBehaviour
     private void SaveUpgradeLevels()
     {
         RunData.Instance.upgrades.Clear();
-
         foreach (var upgrade in upgrades)
-        {
-            RunData.Instance.upgrades.Add(
-                new UpgradeSaveData(
-                    upgrade.Id,
-                    upgrade.Level
-                )
-            );
-        }
+            RunData.Instance.upgrades.Add(new UpgradeSaveData(upgrade.Id, upgrade.Level));
     }
 }

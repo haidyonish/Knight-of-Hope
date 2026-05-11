@@ -15,7 +15,6 @@ public class PlayerHealth : EntityHealth
         {
             if (stats == null)
                 stats = GetComponent<PlayerStats>();
-
             return stats;
         }
     }
@@ -23,7 +22,6 @@ public class PlayerHealth : EntityHealth
     protected override void Awake()
     {
         maxHealth = Stats.MaxHealth;
-
         base.Awake();
     }
 
@@ -36,17 +34,10 @@ public class PlayerHealth : EntityHealth
     protected override void Update()
     {
         base.Update();
-
         if (Stats.Regen > 0f && currentHealth < Stats.MaxHealth)
         {
-            currentHealth +=
-                Stats.Regen *
-                Time.deltaTime *
-                regenEfficiency;
-
-            currentHealth =
-                Mathf.Min(currentHealth, Stats.MaxHealth);
-
+            currentHealth += Stats.Regen * Time.deltaTime * regenEfficiency;
+            currentHealth = Mathf.Min(currentHealth, Stats.MaxHealth);
             if (statBars != null)
                 statBars.SetHP(currentHealth / Stats.MaxHealth);
         }
@@ -55,20 +46,15 @@ public class PlayerHealth : EntityHealth
     public override void TakeDamage(float damage)
     {
         base.TakeDamage(damage);
-
         if (statBars != null)
             statBars.SetHP(currentHealth / Stats.MaxHealth);
-
         soundManager.PlayPlayerHurt();
     }
 
     public void IncreaseMaxHealth(float amount)
     {
         currentHealth += amount;
-
-        currentHealth =
-            Mathf.Min(currentHealth, Stats.MaxHealth);
-
+        currentHealth = Mathf.Min(currentHealth, Stats.MaxHealth);
         if (statBars != null)
             statBars.SetHP(currentHealth / Stats.MaxHealth);
     }
@@ -76,7 +62,6 @@ public class PlayerHealth : EntityHealth
     protected override void Die()
     {
         base.Die();
-
         gameManager.GameOver();
     }
 }

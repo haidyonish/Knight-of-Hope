@@ -31,17 +31,12 @@ public class MainMenu : MonoBehaviour
         credits.anchoredPosition = hiddenPos;
         settings.anchoredPosition = hiddenPos;
         leaderboard.anchoredPosition = hiddenPos;
-
         creditsTarget = hiddenPos;
         settingsTarget = hiddenPos;
         leaderboardTarget = hiddenPos;
-
         PlayerProfile.Load();
-
         if (!PlayerProfile.HasName)
-        {
             nameInputPanel.SetActive(true);
-        }
     }
 
     private void Update()
@@ -54,16 +49,13 @@ public class MainMenu : MonoBehaviour
     public void StartGame()
     {
         RunData.Instance.ResetRun();
-
         RunStats.Instance.ResetStats();
-
         introSlides.Play();
     }
 
     public void ToggleCredits()
     {
         bool isOpen = Vector2.Distance(creditsTarget, shownPos) < 1f;
-
         if (isOpen)
         {
             creditsTarget = hiddenPos;
@@ -71,7 +63,6 @@ public class MainMenu : MonoBehaviour
         else
         {
             creditsTarget = shownPos;
-
             settingsTarget = hiddenPos;
             leaderboardTarget = hiddenPos;
         }
@@ -80,7 +71,6 @@ public class MainMenu : MonoBehaviour
     public void ToggleSettings()
     {
         bool isOpen = Vector2.Distance(settingsTarget, shownPos) < 1f;
-
         if (isOpen)
         {
             settingsTarget = hiddenPos;
@@ -88,7 +78,6 @@ public class MainMenu : MonoBehaviour
         else
         {
             settingsTarget = shownPos;
-
             creditsTarget = hiddenPos;
             leaderboardTarget = hiddenPos;
         }
@@ -97,7 +86,6 @@ public class MainMenu : MonoBehaviour
     public void ToggleLeaderboard()
     {
         bool isOpen = Vector2.Distance(leaderboardTarget, shownPos) < 1f;
-
         if (isOpen)
         {
             leaderboardTarget = hiddenPos;
@@ -105,10 +93,8 @@ public class MainMenu : MonoBehaviour
         else
         {
             leaderboardTarget = shownPos;
-
             creditsTarget = hiddenPos;
             settingsTarget = hiddenPos;
-
             leaderboardUI.Refresh();
         }
     }
@@ -116,7 +102,6 @@ public class MainMenu : MonoBehaviour
     public void QuitGame()
     {
         Application.Quit();
-
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #endif
@@ -124,10 +109,6 @@ public class MainMenu : MonoBehaviour
 
     private void AnimatePanel(RectTransform panel, Vector2 target)
     {
-        panel.anchoredPosition = Vector2.Lerp(
-            panel.anchoredPosition,
-            target,
-            animationSpeed * Time.unscaledDeltaTime
-        );
+        panel.anchoredPosition = Vector2.Lerp(panel.anchoredPosition, target, animationSpeed * Time.unscaledDeltaTime);
     }
 }

@@ -23,19 +23,8 @@ public class StatBars : MonoBehaviour
 
     private void Update()
     {
-        UpdateBar(
-            ref currentXP,
-            ref targetXP,
-            ref velocityXP,
-            xpFill
-        );
-
-        UpdateBar(
-            ref currentHP,
-            ref targetHP,
-            ref velocityHP,
-            hpFill
-        );
+        UpdateBar(ref currentXP, ref targetXP, ref velocityXP, xpFill);
+        UpdateBar(ref currentHP, ref targetHP, ref velocityHP, hpFill);
     }
 
     public void SetXP(float progress)
@@ -51,54 +40,30 @@ public class StatBars : MonoBehaviour
     public void SetHPInstant(float progress)
     {
         progress = Mathf.Clamp01(progress);
-
         currentHP = progress;
         targetHP = progress;
         velocityHP = 0f;
-
         ApplyWidth(hpFill, currentHP);
     }
 
     public void SetXPInstant(float progress)
     {
         progress = Mathf.Clamp01(progress);
-
         currentXP = progress;
         targetXP = progress;
         velocityXP = 0f;
-
         ApplyWidth(xpFill, currentXP);
     }
 
-    private void UpdateBar(
-    ref float current,
-    ref float target,
-    ref float velocity,
-    RectTransform fill)
+    private void UpdateBar(ref float current, ref float target, ref float velocity, RectTransform fill)
     {
-        current = Mathf.SmoothDamp(
-            current,
-            target,
-            ref velocity,
-            smoothTime,
-            Mathf.Infinity,
-            Time.unscaledDeltaTime
-        );
-
+        current = Mathf.SmoothDamp(current, target, ref velocity, smoothTime, Mathf.Infinity, Time.unscaledDeltaTime);
         ApplyWidth(fill, current);
     }
 
     private void ApplyWidth(RectTransform fill, float progress)
     {
-        float width = Mathf.Lerp(
-            minWidth,
-            maxWidth,
-            progress
-        );
-
-        fill.sizeDelta = new Vector2(
-            width,
-            fill.sizeDelta.y
-        );
+        float width = Mathf.Lerp(minWidth, maxWidth, progress);
+        fill.sizeDelta = new Vector2(width, fill.sizeDelta.y);
     }
 }

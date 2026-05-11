@@ -14,7 +14,6 @@ Pixel-art roguelite about defending the royal family against waves of enemies.
 - online leaderboard
 - English / Russian localization
 - pixel-art visual style
-- persistent progression during runs
 
 ---
 
@@ -78,7 +77,7 @@ https://haidyonish.itch.io/
 
 ## Credits
 
-See [CREDITS.md](CREDITS%20Knight%20of%20Hope.md)
+See [CREDITS.md](CREDITS.md)
 
 ---
 

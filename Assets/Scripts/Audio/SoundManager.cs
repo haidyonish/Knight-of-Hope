@@ -6,7 +6,6 @@ public class SoundManager : MonoBehaviour
     private class SoundData
     {
         public AudioClip clip;
-
         [Range(0f, 3f)]
         public float volume = 1f;
     }
@@ -53,7 +52,6 @@ public class SoundManager : MonoBehaviour
 
     private bool musicPaused = false;
     private bool musicStopped = false;
-
     private float currentVolume;
 
     private void Awake()
@@ -64,24 +62,12 @@ public class SoundManager : MonoBehaviour
 
     private void Update()
     {
-        float target =
-            baseMusicVolume *
-            masterVolumeMultiplier *
-            SettingsData.ToVolume(SettingsData.Master) *
-            SettingsData.ToVolume(SettingsData.Music);
-
+        float target = baseMusicVolume * masterVolumeMultiplier * SettingsData.ToVolume(SettingsData.Master) * SettingsData.ToVolume(SettingsData.Music);
         if (musicPaused)
             target *= 0.2f;
-
         if (musicStopped)
             target = 0f;
-
-        currentVolume = Mathf.MoveTowards(
-            currentVolume,
-            target,
-            fadeSpeed * Time.unscaledDeltaTime
-        );
-
+        currentVolume = Mathf.MoveTowards(currentVolume, target, fadeSpeed * Time.unscaledDeltaTime);
         musicSource.volume = currentVolume;
     }
 
@@ -104,22 +90,11 @@ public class SoundManager : MonoBehaviour
     {
         if (sound.clip == null)
             return;
-
-        float category = isUI
-            ? SettingsData.UI
-            : SettingsData.SFX;
-
-        float volume =
-            sound.volume *
-            sfxMultiplier *
-            masterVolumeMultiplier *
-            SettingsData.ToVolume(SettingsData.Master) *
-            SettingsData.ToVolume(category);
-
+        float category = isUI ? SettingsData.UI : SettingsData.SFX;
+        float volume = sound.volume * sfxMultiplier * masterVolumeMultiplier * SettingsData.ToVolume(SettingsData.Master) * SettingsData.ToVolume(category);
         audioSource.PlayOneShot(sound.clip, volume);
     }
 
-    // SFX
     public void PlayEnemyDeath() => Play(enemyDeath);
     public void PlayEnemyHit() => Play(enemyHit);
     public void PlayGameOver() => Play(gameOver);
@@ -139,7 +114,6 @@ public class SoundManager : MonoBehaviour
     public void PlayRockThrow() => Play(rockThrow);
     public void PlayRockHit() => Play(rockHit);
 
-    // UI
     public void PlayButtonClick() => Play(buttonClick, true);
     public void PlayButtonHover() => Play(buttonHover, true);
     public void PlayCardHover() => Play(cardHover, true);

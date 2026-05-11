@@ -27,7 +27,6 @@ public class SettingsMenu : MonoBehaviour
 
     [Header("Difficulty")]
     [SerializeField] private GameObject difficultyPanel;
-
     [SerializeField] private GameObject wandererSelected;
     [SerializeField] private GameObject lastKnightSelected;
 
@@ -42,27 +41,18 @@ public class SettingsMenu : MonoBehaviour
     private void Start()
     {
         SettingsData.Load();
-
         isUpdating = true;
-
         masterSlider.value = Snap(SettingsData.Master);
         musicSlider.value = Snap(SettingsData.Music);
         sfxSlider.value = Snap(SettingsData.SFX);
         uiSlider.value = Snap(SettingsData.UI);
-
         languageDropdown.value = (int)SettingsData.Language;
-
         isUpdating = false;
-
         UpdateTexts();
-
         PlayerProfile.Load();
-
         RefreshLocalizedTexts();
-
         if (nameInput != null)
             nameInput.characterLimit = 16;
-
         RefreshDifficultyUI();
     }
 
@@ -70,7 +60,6 @@ public class SettingsMenu : MonoBehaviour
     {
         if (isUpdating)
             return;
-
         Apply(ref SettingsData.Master, masterSlider, value);
     }
 
@@ -78,7 +67,6 @@ public class SettingsMenu : MonoBehaviour
     {
         if (isUpdating)
             return;
-
         Apply(ref SettingsData.Music, musicSlider, value);
     }
 
@@ -86,7 +74,6 @@ public class SettingsMenu : MonoBehaviour
     {
         if (isUpdating)
             return;
-
         Apply(ref SettingsData.SFX, sfxSlider, value);
     }
 
@@ -94,74 +81,45 @@ public class SettingsMenu : MonoBehaviour
     {
         if (isUpdating)
             return;
-
         Apply(ref SettingsData.UI, uiSlider, value);
     }
 
     public void SetLanguage(int index)
     {
         SettingsData.Language = (Language)index;
-
         SettingsData.Save();
-
         LocalizationManager.Instance.RefreshAll();
-
         RefreshLocalizedTexts();
     }
 
     public async void ApplyName()
     {
         string input = nameInput.text;
-
-        if (!NicknameValidator.TryValidate(
-            input,
-            out string errorKey,
-            out string clean
-        ))
+        if (!NicknameValidator.TryValidate(input, out string errorKey, out string clean))
         {
-            nameMessage.text =
-                LocalizationManager.Instance.GetText(errorKey);
-
+            nameMessage.text = LocalizationManager.Instance.GetText(errorKey);
             return;
         }
-
         if (clean == PlayerProfile.PlayerName)
         {
-            nameMessage.text =
-                LocalizationManager.Instance.GetText(
-                    "settings_name_same"
-                );
-
+            nameMessage.text = LocalizationManager.Instance.GetText("settings_name_same");
             return;
         }
-
         PlayerProfile.SetName(clean);
-
-        currentNameText.text =
-            $"{LocalizationManager.Instance.GetText("settings_current_name")} {clean}";
-
-        nameMessage.text =
-            LocalizationManager.Instance.GetText(
-                "settings_name_saved"
-            );
-
+        currentNameText.text = $"{LocalizationManager.Instance.GetText("settings_current_name")} {clean}";
+        nameMessage.text = LocalizationManager.Instance.GetText("settings_name_saved");
         int bestScore = PlayerProfile.BestScore;
-
         if (bestScore <= 0 || leaderboardService == null)
             return;
-
         if (applyButton != null)
             applyButton.interactable = false;
-
         try
         {
             await leaderboardService.SubmitScoreAsync(bestScore);
         }
         catch (System.Exception e)
         {
-            Debug.LogError(
-                $"[SettingsMenu] Failed to submit score: {e}"
-            );
+            Debug.LogError($"[SettingsMenu] Failed to submit score: {e}");
         }
         finally
         {
@@ -173,34 +131,19 @@ public class SettingsMenu : MonoBehaviour
     private void RefreshLocalizedTexts()
     {
         if (currentNameText != null)
-        {
-            currentNameText.text =
-                $"{LocalizationManager.Instance.GetText("settings_current_name")} {PlayerProfile.PlayerName}";
-        }
-
+            currentNameText.text = $"{LocalizationManager.Instance.GetText("settings_current_name")} {PlayerProfile.PlayerName}";
         if (nameMessage != null)
-        {
-            nameMessage.text =
-                LocalizationManager.Instance.GetText(
-                    "settings_name_default_message"
-                );
-        }
+            nameMessage.text = LocalizationManager.Instance.GetText("settings_name_default_message");
     }
 
     private void Apply(ref float target, Slider slider, float value)
     {
         isUpdating = true;
-
         float snapped = Snap(value);
-
         target = snapped;
-
         slider.value = snapped;
-
         UpdateTexts();
-
         SettingsData.Save();
-
         isUpdating = false;
     }
 
@@ -221,9 +164,7 @@ public class SettingsMenu : MonoBehaviour
     {
         if (difficultyPanel == null)
             return;
-
         difficultyPanel.SetActive(true);
-
         RefreshDifficultyUI();
     }
 
@@ -231,39 +172,28 @@ public class SettingsMenu : MonoBehaviour
     {
         if (difficultyPanel == null)
             return;
-
         difficultyPanel.SetActive(false);
     }
 
     public void SelectWanderer()
     {
-        DifficultyManager.CurrentDifficulty =
-            Difficulty.Wanderer;
-
+        DifficultyManager.CurrentDifficulty = Difficulty.Wanderer;
         RefreshDifficultyUI();
-
         CloseDifficultyPanel();
     }
 
     public void SelectLastKnight()
     {
-        DifficultyManager.CurrentDifficulty =
-            Difficulty.LastKnight;
-
+        DifficultyManager.CurrentDifficulty = Difficulty.LastKnight;
         RefreshDifficultyUI();
-
         CloseDifficultyPanel();
     }
 
     private void RefreshDifficultyUI()
     {
-        bool wanderer =
-            DifficultyManager.CurrentDifficulty ==
-            Difficulty.Wanderer;
-
+        bool wanderer = DifficultyManager.CurrentDifficulty == Difficulty.Wanderer;
         if (wandererSelected != null)
             wandererSelected.SetActive(wanderer);
-
         if (lastKnightSelected != null)
             lastKnightSelected.SetActive(!wanderer);
     }

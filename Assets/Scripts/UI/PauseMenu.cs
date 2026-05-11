@@ -59,11 +59,7 @@ public class PauseMenu : MonoBehaviour
         if (!animating)
             return;
 
-        panel.anchoredPosition = Vector2.Lerp(
-            panel.anchoredPosition,
-            target,
-            animationSpeed * Time.unscaledDeltaTime
-        );
+        panel.anchoredPosition = Vector2.Lerp(panel.anchoredPosition, target, animationSpeed * Time.unscaledDeltaTime);
 
         if (Vector2.Distance(panel.anchoredPosition, target) < 0.5f)
         {

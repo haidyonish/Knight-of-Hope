@@ -27,10 +27,7 @@ public static class CursorManager
     {
         IsGameplayCursorLocked = true;
 
-        Vector2 center = new Vector2(
-            Screen.width / 2f,
-            Screen.height / 2f
-        );
+        Vector2 center = new Vector2(Screen.width / 2f, Screen.height / 2f);
 
         Mouse.current?.WarpCursorPosition(center);
 
@@ -44,10 +41,7 @@ public static class CursorManager
     {
         IsGameplayCursorLocked = false;
 
-        Vector2 center = new Vector2(
-            Screen.width / 2f,
-            Screen.height / 2f
-        );
+        Vector2 center = new Vector2(Screen.width / 2f, Screen.height / 2f);
 
         Mouse.current?.WarpCursorPosition(center);
 

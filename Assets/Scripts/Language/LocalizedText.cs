@@ -16,10 +16,7 @@ public class LocalizedText : MonoBehaviour
     private void Start()
     {
         if (LocalizationManager.Instance == null)
-        {
-            Debug.LogError("LocalizationManager not found");
             return;
-        }
 
         LocalizationManager.Instance.Register(this);
 
@@ -29,9 +26,7 @@ public class LocalizedText : MonoBehaviour
     private void OnDestroy()
     {
         if (LocalizationManager.Instance != null)
-        {
             LocalizationManager.Instance.Unregister(this);
-        }
     }
 
     public void Refresh()
@@ -39,7 +34,6 @@ public class LocalizedText : MonoBehaviour
         if (LocalizationManager.Instance == null)
             return;
 
-        textComponent.text =
-            LocalizationManager.Instance.GetText(key);
+        textComponent.text = LocalizationManager.Instance.GetText(key);
     }
 }

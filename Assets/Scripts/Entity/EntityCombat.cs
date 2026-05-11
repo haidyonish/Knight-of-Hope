@@ -26,8 +26,7 @@ public abstract class EntityCombat : MonoBehaviour
     {
         int facingDir = movement.IsFacingRight ? 1 : -1;
 
-        Vector2 center = (Vector2)transform.position +
-                         new Vector2(facingDir * range / 2f, attackOffset);
+        Vector2 center = (Vector2)transform.position + new Vector2(facingDir * range / 2f, attackOffset);
 
         Vector2 size = new Vector2(range, attackHeight);
 

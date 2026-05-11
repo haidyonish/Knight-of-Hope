@@ -18,16 +18,13 @@ public class PlayerMovement : EntityMovement
     protected override void Awake()
     {
         base.Awake();
-
         playerStats = GetComponent<PlayerStats>();
     }
 
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
-
         jumpBufferCounter -= Time.fixedDeltaTime;
-
         UpdateAnimations();
     }
 
@@ -44,36 +41,15 @@ public class PlayerMovement : EntityMovement
     protected override void HandleMovement()
     {
         if (canMove)
-        {
-            rb.linearVelocity = new Vector2(
-                moveInput.x * playerStats.MoveSpeed,
-                rb.linearVelocity.y
-            );
-        }
-
-        if ((IsFacingRight && moveInput.x < 0) ||
-            (!IsFacingRight && moveInput.x > 0))
-        {
+            rb.linearVelocity = new Vector2(moveInput.x * playerStats.MoveSpeed, rb.linearVelocity.y);
+        if ((IsFacingRight && moveInput.x < 0) || (!IsFacingRight && moveInput.x > 0))
             Flip();
-        }
-
-        bool canJumpNow =
-            jumpBufferCounter > 0f &&
-            IsGrounded &&
-            canJump &&
-            Time.time >= nextJumpTime;
-
+        bool canJumpNow = jumpBufferCounter > 0f && IsGrounded && canJump && Time.time >= nextJumpTime;
         if (canJumpNow)
         {
             soundManager.PlayJump();
-
-            rb.linearVelocity = new Vector2(
-                rb.linearVelocity.x,
-                playerStats.JumpForce
-            );
-
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, playerStats.JumpForce);
             jumpBufferCounter = 0f;
-
             nextJumpTime = Time.time + jumpCooldown;
         }
     }

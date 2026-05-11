@@ -10,32 +10,19 @@ public class NicknameInputUI : MonoBehaviour
 
     private void Start()
     {
-        messageText.text =
-            LocalizationManager.Instance.GetText(
-                "nickname_input_default"
-            );
-
+        messageText.text = LocalizationManager.Instance.GetText("nickname_input_default");
         inputField.characterLimit = 16;
     }
 
     public void Confirm()
     {
         string input = inputField.text;
-
-        if (!NicknameValidator.TryValidate(
-            input,
-            out string errorKey,
-            out string clean
-        ))
+        if (!NicknameValidator.TryValidate(input, out string errorKey, out string clean))
         {
-            messageText.text =
-                LocalizationManager.Instance.GetText(errorKey);
-
+            messageText.text = LocalizationManager.Instance.GetText(errorKey);
             return;
         }
-
         PlayerProfile.SetName(clean);
-
         panel.SetActive(false);
     }
 }

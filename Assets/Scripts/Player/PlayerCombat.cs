@@ -24,7 +24,6 @@ public class PlayerCombat : EntityCombat
     protected override void Awake()
     {
         base.Awake();
-
         stats = GetComponent<PlayerStats>();
     }
 
@@ -32,7 +31,6 @@ public class PlayerCombat : EntityCombat
     {
         if (Time.timeScale == 0f)
             return;
-
         HandleDaggers();
         HandleQueuedDaggers();
     }
@@ -41,35 +39,23 @@ public class PlayerCombat : EntityCombat
     {
         if (Time.time < nextAttackTime)
             return;
-
         if (!movement.IsGrounded)
             return;
-
         nextAttackTime = Time.time + attackCooldown;
-
         animator.SetTrigger("Attack");
     }
 
     public override void DamageTargets()
     {
         Collider2D[] targets = GetTargets(stats.SwordRange);
-
         if (targets.Length > 0)
         {
             soundManager.PlaySwordHitEnemy();
-
             foreach (var t in targets)
             {
                 EntityHealth health = t.GetComponent<EntityHealth>();
-
                 if (health != null)
-                {
-                    health.TakeDamage(
-                        stats.FinalSwordDamage,
-                        stats.SwordKnockback,
-                        transform.position
-                    );
-                }
+                    health.TakeDamage(stats.FinalSwordDamage, stats.SwordKnockback, transform.position);
             }
         }
         else
@@ -87,18 +73,12 @@ public class PlayerCombat : EntityCombat
     {
         if (!stats.DaggersUnlocked)
             return;
-
         if (Time.time < nextDaggerTime)
             return;
-
         nextDaggerTime = Time.time + stats.DaggerCooldown;
-
         daggersToSpawn = stats.DaggerCount;
-
         SpawnDagger();
-
         daggersToSpawn--;
-
         nextSingleDaggerTime = Time.time + daggerDelay;
     }
 
@@ -106,35 +86,18 @@ public class PlayerCombat : EntityCombat
     {
         if (daggersToSpawn <= 0)
             return;
-
         if (Time.time < nextSingleDaggerTime)
             return;
-
         SpawnDagger();
-
         daggersToSpawn--;
-
         nextSingleDaggerTime = Time.time + daggerDelay;
     }
 
     private void SpawnDagger()
     {
         Vector2 direction = movement.IsFacingRight ? Vector2.right : Vector2.left;
-
-        Vector2 spawnPosition = (Vector2)transform.position
-            + new Vector2(daggerOffset.x * direction.x, daggerOffset.y);
-
-        DaggerProjectile dagger = Instantiate(
-            daggerPrefab,
-            spawnPosition,
-            Quaternion.identity
-        );
-
-        dagger.Setup(
-            direction,
-            stats.FinalDaggerDamage,
-            stats.DaggerPenetration,
-            soundManager
-        );
+        Vector2 spawnPosition = (Vector2)transform.position + new Vector2(daggerOffset.x * direction.x, daggerOffset.y);
+        DaggerProjectile dagger = Instantiate(daggerPrefab, spawnPosition, Quaternion.identity);
+        dagger.Setup(direction, stats.FinalDaggerDamage, stats.DaggerPenetration, soundManager);
     }
 }

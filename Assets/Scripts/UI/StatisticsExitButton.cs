@@ -15,8 +15,6 @@ public class StatisticsExitButton : MonoBehaviour
 
         await runStatsManager.SubmitScoreAsync();
 
-        SlideShowManager.Instance.FadeToScene(
-            "MainMenu"
-        );
+        SlideShowManager.Instance.FadeToScene("MainMenu");
     }
 }

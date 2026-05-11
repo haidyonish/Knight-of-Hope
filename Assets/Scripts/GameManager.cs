@@ -45,40 +45,28 @@ public class GameManager : MonoBehaviour
         if (isBlockingInput)
         {
             inputBlockTimer -= Time.unscaledDeltaTime;
-
             if (inputBlockTimer <= 0f)
             {
                 isBlockingInput = false;
                 inputBlocker.SetActive(false);
             }
         }
-
         if (endingSlowMotion)
         {
             UpdateEndingSlowMotion();
             return;
         }
-
         if (isPaused || gameOver || victory)
             return;
-
         CurrentTime += Time.deltaTime;
-
         if (CurrentTime > levelDuration)
             Victory();
     }
 
     public void TogglePause()
     {
-        if (
-            gameOver ||
-            victory ||
-            endingSlowMotion ||
-            isTransitioning ||
-            upgradeManager.IsChoosingUpgrade
-        )
+        if (gameOver || victory || endingSlowMotion || isTransitioning || upgradeManager.IsChoosingUpgrade)
             return;
-
         if (isPaused)
             ResumeGame();
         else
@@ -89,13 +77,9 @@ public class GameManager : MonoBehaviour
     {
         soundManager.PlayPauseMenuOpen();
         soundManager.PauseMusic();
-
         CursorManager.ShowCursor();
-
         isPaused = true;
-
         Time.timeScale = 0f;
-
         ui.ShowPausePanel();
     }
 
@@ -103,19 +87,12 @@ public class GameManager : MonoBehaviour
     {
         soundManager.PlayPauseMenuClose();
         soundManager.ResumeMusic();
-
         isPaused = false;
-
         Time.timeScale = 1f;
-
         ui.HidePausePanel();
-
         pauseMenu.ResetToPause();
-
         if (!IsEnding)
-        {
             CursorManager.HideCursor();
-        }
     }
 
     public void LoadStatistics()
@@ -123,25 +100,15 @@ public class GameManager : MonoBehaviour
         isPaused = false;
         isTransitioning = true;
         Time.timeScale = 0f;
-
         soundManager.PauseMusic();
-
-
         runStatsManager.OnDefeatLevelCompleted();
-
-        SlideShowManager.Instance.PlaySingleSlide(
-            CinematicLibrary.Instance.abandonedRun,
-            "Statistics"
-        );
+        SlideShowManager.Instance.PlaySingleSlide(CinematicLibrary.Instance.abandonedRun, "Statistics");
     }
 
     public void LoadFailedStatistics()
     {
         isTransitioning = true;
-        SlideShowManager.Instance.PlaySingleSlide(
-            CinematicLibrary.Instance.failedRun,
-            "Statistics"
-        );
+        SlideShowManager.Instance.PlaySingleSlide(CinematicLibrary.Instance.failedRun, "Statistics");
     }
 
     public void LoadMainMenu()
@@ -153,46 +120,25 @@ public class GameManager : MonoBehaviour
     public void LoadNextLevel()
     {
         isTransitioning = true;
-        string currentScene =
-            SceneManager.GetActiveScene().name;
-
+        string currentScene = SceneManager.GetActiveScene().name;
         if (currentScene == "Level1")
         {
-            SlideShowManager.Instance.PlaySingleSlide(
-                CinematicLibrary.Instance.level1Complete,
-                "Level2"
-            );
-
+            SlideShowManager.Instance.PlaySingleSlide(CinematicLibrary.Instance.level1Complete, "Level2");
             return;
         }
-
         if (currentScene == "Level2")
         {
-            SlideShowManager.Instance.PlaySingleSlide(
-                CinematicLibrary.Instance.level2Complete,
-                "Level3"
-            );
-
+            SlideShowManager.Instance.PlaySingleSlide(CinematicLibrary.Instance.level2Complete, "Level3");
             return;
         }
-
         if (currentScene == "Level3")
         {
-            SlideShowManager.Instance.PlaySingleSlide(
-                CinematicLibrary.Instance.level3Complete,
-                "Level4"
-            );
-
+            SlideShowManager.Instance.PlaySingleSlide(CinematicLibrary.Instance.level3Complete, "Level4");
             return;
         }
-
         if (currentScene == "Level4")
         {
-            SlideShowManager.Instance.PlaySlides(
-                CinematicLibrary.Instance.finalSlides,
-                "Statistics"
-            );
-
+            SlideShowManager.Instance.PlaySlides(CinematicLibrary.Instance.finalSlides, "Statistics");
             return;
         }
     }
@@ -209,14 +155,10 @@ public class GameManager : MonoBehaviour
     {
         if (gameOver)
             return;
-
         gameOver = true;
-
         runStatsManager.OnDefeatLevelCompleted();
-
         soundManager.StopMusicSmooth();
         soundManager.PlayGameOver();
-
         endingWin = false;
         endingSlowMotion = true;
         slowMotionTimer = 0f;
@@ -226,14 +168,10 @@ public class GameManager : MonoBehaviour
     {
         if (victory)
             return;
-
         victory = true;
-
         runStatsManager.OnVictoryLevelCompleted();
-
         soundManager.StopMusicSmooth();
         soundManager.PlayGameWin();
-
         endingWin = true;
         endingSlowMotion = true;
         slowMotionTimer = 0f;
@@ -242,26 +180,18 @@ public class GameManager : MonoBehaviour
     private void UpdateEndingSlowMotion()
     {
         slowMotionTimer += Time.unscaledDeltaTime;
-
         float progress = slowMotionTimer / slowMotionDuration;
-
         Time.timeScale = Mathf.Lerp(1f, 0f, progress);
-
         if (progress >= 1f)
         {
             Time.timeScale = 0f;
-
             if (upgradeManager.IsChoosingUpgrade)
                 return;
-
             endingSlowMotion = false;
-
             inputBlocker.SetActive(true);
             inputBlockTimer = inputBlockTime;
             isBlockingInput = true;
-
             CursorManager.ShowCursor();
-
             if (endingWin)
                 ui.ShowVictoryPanel();
             else

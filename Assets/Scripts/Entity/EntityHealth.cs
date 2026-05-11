@@ -50,9 +50,7 @@ public abstract class EntityHealth : MonoBehaviour
         PlayDamageFeedback();
 
         if (currentHealth <= 0)
-        {
             Die();
-        }
     }
 
     protected virtual void ApplyKnockback(float knockback, Vector2 sourcePosition)
@@ -60,8 +58,7 @@ public abstract class EntityHealth : MonoBehaviour
         if (rigitbody == null || knockback <= 0f)
             return;
 
-        Vector2 direction =
-            (transform.position - (Vector3)sourcePosition).normalized;
+        Vector2 direction = (transform.position - (Vector3)sourcePosition).normalized;
 
         rigitbody.AddForce(direction * knockback, ForceMode2D.Impulse);
     }

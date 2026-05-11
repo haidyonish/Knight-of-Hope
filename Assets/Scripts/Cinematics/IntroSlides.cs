@@ -10,9 +10,6 @@ public class IntroSlides : MonoBehaviour
 
     public void Play()
     {
-        SlideShowManager.Instance.PlaySlides(
-            slides,
-            nextScene
-        );
+        SlideShowManager.Instance.PlaySlides(slides, nextScene);
     }
 }

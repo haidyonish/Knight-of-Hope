@@ -18,8 +18,7 @@ public class RunStatsManager : MonoBehaviour
 
         RunStats.Instance.totalTime += gameManager.LevelDuration;
 
-        RunStats.Instance.heartsSaved +=
-            Mathf.RoundToInt(vipHealth.CurrentHealth);
+        RunStats.Instance.heartsSaved += Mathf.RoundToInt(vipHealth.CurrentHealth);
 
         if (vipHealth.MaxHealth == vipHealth.CurrentHealth)
             RunStats.Instance.noDamageLevels++;

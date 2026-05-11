@@ -33,23 +33,15 @@ public class UI : MonoBehaviour
 
     public void UpdateLevelText(int level)
     {
-        string levelWord =
-            LocalizationManager.Instance.GetText("ui_level");
-
+        string levelWord = LocalizationManager.Instance.GetText("ui_level");
         levelText.text = $"{levelWord} {level}";
     }
 
     private void UpdateTimer()
     {
-        float remainingTime =
-            Mathf.Max(
-                gameManager.LevelDuration - gameManager.CurrentTime,
-                0f
-            );
-
+        float remainingTime = Mathf.Max(gameManager.LevelDuration - gameManager.CurrentTime, 0f);
         int minutes = (int)(remainingTime / 60);
         int seconds = (int)(remainingTime % 60);
-
         timerText.text = $"{minutes:D2}:{seconds:D2}";
     }
 }

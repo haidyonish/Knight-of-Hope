@@ -21,12 +21,7 @@ public class AnimationsEvents : MonoBehaviour
     private void AttackFinished()
     {
         if (entityCombat is EnemyCombat enemy)
-        {
             enemy.OnAttackFinished();
-        }
     }
-    private void ThrowRock()
-    {
-        rangedCombat?.ThrowRock();
-    }
+    private void ThrowRock() => rangedCombat?.ThrowRock();
 }

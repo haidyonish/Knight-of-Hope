@@ -20,7 +20,6 @@ public class LeaderboardUI : MonoBehaviour
     [SerializeField] private float requestCooldown = 0.5f;
 
     private readonly List<GameObject> _items = new();
-
     private bool isLoading = false;
     private float lastRequestTime = -10f;
 
@@ -28,77 +27,47 @@ public class LeaderboardUI : MonoBehaviour
     {
         if (isLoading)
             return;
-
         if (Time.unscaledTime - lastRequestTime < requestCooldown)
             return;
-
         lastRequestTime = Time.unscaledTime;
         isLoading = true;
-
         Clear();
-
         var scores = await leaderboardService.GetTopAsync(topCount);
-
         if (!this || !gameObject.activeInHierarchy)
         {
             isLoading = false;
             return;
         }
-
         if (scores == null)
         {
-            Debug.LogWarning("[LeaderboardUI] No scores loaded");
             isLoading = false;
             return;
         }
-
         foreach (var score in scores)
         {
             var item = Instantiate(itemPrefab, contentParent);
-
-            item.Setup(
-                score.Rank,
-                score.PlayerName,
-                (long)score.Value
-            );
-
+            item.Setup(score.Rank, score.PlayerName, (long)score.Value);
             _items.Add(item.gameObject);
         }
-
         await LoadPlayerScore();
-
         isLoading = false;
     }
 
     private async System.Threading.Tasks.Task LoadPlayerScore()
     {
         var myScore = await leaderboardService.GetMyScoreAsync();
-
         if (!this || !gameObject.activeInHierarchy)
             return;
-
         if (myScore == null)
         {
             playerRankText.text = "-";
-            playerNameText.text =
-                string.IsNullOrEmpty(PlayerProfile.PlayerName)
-                ? "Unknown"
-                : PlayerProfile.PlayerName;
-
-            playerScoreText.text =
-                PlayerProfile.BestScore.ToString();
-
+            playerNameText.text = string.IsNullOrEmpty(PlayerProfile.PlayerName) ? "Unknown" : PlayerProfile.PlayerName;
+            playerScoreText.text = PlayerProfile.BestScore.ToString();
             return;
         }
-
-        playerRankText.text =
-            $"{myScore.Rank}";
-
-        playerNameText.text =
-            myScore.PlayerName;
-
-        playerScoreText.text =
-            myScore.Value.ToString();
+        playerRankText.text = $"{myScore.Rank}";
+        playerNameText.text = myScore.PlayerName;
+        playerScoreText.text = myScore.Value.ToString();
     }
 
     private void Clear()
@@ -108,7 +77,6 @@ public class LeaderboardUI : MonoBehaviour
             if (item)
                 Destroy(item);
         }
-
         _items.Clear();
     }
 

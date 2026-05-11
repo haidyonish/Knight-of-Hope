@@ -8,8 +8,7 @@ public class RunData : MonoBehaviour
     public int playerLevel = 1;
     public float currentXP = 0f;
 
-    public List<UpgradeSaveData> upgrades =
-        new List<UpgradeSaveData>();
+    public List<UpgradeSaveData> upgrades = new List<UpgradeSaveData>();
 
     private void Awake()
     {

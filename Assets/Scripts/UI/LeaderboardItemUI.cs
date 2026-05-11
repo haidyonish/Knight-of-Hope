@@ -13,11 +13,9 @@ public class LeaderboardItemUI : MonoBehaviour
 
     [Header("Colors")]
     [SerializeField] private Color normalColor = new Color(1, 1, 1, 0f);
-
     [SerializeField] private Color goldColor = new Color(1f, 0.84f, 0f, 0.25f);
     [SerializeField] private Color silverColor = new Color(0.75f, 0.75f, 0.75f, 0.25f);
     [SerializeField] private Color bronzeColor = new Color(0.8f, 0.5f, 0.2f, 0.25f);
-
     [SerializeField] private Color playerColor = new Color(0.3f, 1f, 0.4f, 0.25f);
 
     [Header("Scale Animation")]
@@ -26,7 +24,6 @@ public class LeaderboardItemUI : MonoBehaviour
 
     private bool isPlayer;
     private Color baseColor;
-
     private float pulseTimer;
     private Vector3 baseScale;
 
@@ -35,17 +32,10 @@ public class LeaderboardItemUI : MonoBehaviour
         rankText.text = $"{rank}";
         nameText.text = playerName;
         scoreText.text = score.ToString();
-
         baseScale = nameText.transform.localScale;
-
-        isPlayer =
-            playerName == PlayerProfile.PlayerName &&
-            score == PlayerProfile.BestScore;
-
+        isPlayer = playerName == PlayerProfile.PlayerName && score == PlayerProfile.BestScore;
         if (isPlayer)
-        {
             baseColor = playerColor;
-        }
         else
         {
             switch (rank)
@@ -64,7 +54,6 @@ public class LeaderboardItemUI : MonoBehaviour
                     break;
             }
         }
-
         background.color = baseColor;
     }
 
@@ -72,11 +61,8 @@ public class LeaderboardItemUI : MonoBehaviour
     {
         if (!isPlayer)
             return;
-
         pulseTimer += Time.unscaledDeltaTime * pulseSpeed;
-
         float scale = 1f + Mathf.Sin(pulseTimer) * pulseAmount;
-
         nameText.transform.localScale = baseScale * scale;
     }
 }

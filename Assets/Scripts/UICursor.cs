@@ -11,10 +11,7 @@ public class UICursor : MonoBehaviour
     {
         Cursor.visible = false;
 
-        screenCenter = new Vector2(
-            Screen.width / 2f,
-            Screen.height / 2f
-        );
+        screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
 
         cursorRect.position = screenCenter;
 
@@ -31,18 +28,14 @@ public class UICursor : MonoBehaviour
         if (CursorManager.IsGameplayCursorLocked)
             return;
 
-        Vector2 mousePosition =
-            Mouse.current.position.ReadValue();
+        Vector2 mousePosition = Mouse.current.position.ReadValue();
 
         cursorRect.position = mousePosition;
     }
 
     public void Show()
     {
-        screenCenter = new Vector2(
-            Screen.width / 2f,
-            Screen.height / 2f
-        );
+        screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
 
         cursorRect.position = screenCenter;
 
@@ -51,10 +44,7 @@ public class UICursor : MonoBehaviour
 
     public void Hide()
     {
-        screenCenter = new Vector2(
-            Screen.width / 2f,
-            Screen.height / 2f
-        );
+        screenCenter = new Vector2(Screen.width / 2f, Screen.height / 2f);
 
         cursorRect.position = screenCenter;
 

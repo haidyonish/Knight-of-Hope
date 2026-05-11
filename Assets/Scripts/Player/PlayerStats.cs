@@ -10,7 +10,6 @@ public class PlayerStats : MonoBehaviour
         {
             if (playerHealth == null)
                 playerHealth = GetComponent<PlayerHealth>();
-
             return playerHealth;
         }
     }
@@ -66,13 +65,10 @@ public class PlayerStats : MonoBehaviour
     public float ExperienceMultiplier => experienceMultiplier;
     public float HopeMultiplier => hopeMultiplier;
 
-
     [Header("Game Balance")]
     [SerializeField] private float enemySpawnRate = 1f;
 
     public float EnemySpawnRate => enemySpawnRate;
-
-    // ===== Methods for modifiers =====
 
     public void AddSwordDamage(float value) => swordDamage += value;
     public void AddSwordRange(float value) => swordRange += value;
@@ -90,7 +86,6 @@ public class PlayerStats : MonoBehaviour
     public void AddMaxHealth(float amount)
     {
         maxHealth += amount;
-
         if (PlayerHealth != null)
             PlayerHealth.IncreaseMaxHealth(amount);
     }
@@ -101,6 +96,7 @@ public class PlayerStats : MonoBehaviour
     {
         experienceMultiplier += value;
     }
+
     public void AddScoreMultiplier(float value)
     {
         RunStats.Instance.scoreMultiplier += value;
@@ -108,20 +104,9 @@ public class PlayerStats : MonoBehaviour
 
     private void ApplyDifficulty()
     {
-        AddSwordDamage(
-            DifficultyManager.BonusSwordDamage
-        );
-
-        AddDaggerDamage(
-            DifficultyManager.BonusDaggerDamage
-        );
-
-        AddMoveSpeed(
-            DifficultyManager.BonusMoveSpeed
-        );
-
-        AddExperienceMultiplier(
-            DifficultyManager.BonusExperienceMultiplier
-        );
+        AddSwordDamage(DifficultyManager.BonusSwordDamage);
+        AddDaggerDamage(DifficultyManager.BonusDaggerDamage);
+        AddMoveSpeed(DifficultyManager.BonusMoveSpeed);
+        AddExperienceMultiplier(DifficultyManager.BonusExperienceMultiplier);
     }
 }
